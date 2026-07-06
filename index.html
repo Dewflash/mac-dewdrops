@@ -1,0 +1,1276 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dewdrops</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #151922;
+      --panel: rgba(26, 30, 40, 0.58);
+      --panel-2: rgba(255, 255, 255, 0.07);
+      --border: rgba(255, 255, 255, 0.14);
+      --text: rgba(255, 255, 255, 0.92);
+      --muted: rgba(255, 255, 255, 0.58);
+      --faint: rgba(255, 255, 255, 0.36);
+      --accent: #9bd8c5;
+      --accent-rgb: 155, 216, 197;
+      --accent-2: #c9bddb;
+      --danger: #e9a1a8;
+      --shadow: 0 22px 58px rgba(0, 0, 0, 0.34);
+      font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 430px;
+      height: 560px;
+      margin: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 7%, rgba(var(--accent-rgb), 0.2), transparent 35%),
+        radial-gradient(circle at 88% 0%, rgba(201, 189, 219, 0.17), transparent 34%),
+        radial-gradient(circle at 72% 88%, rgba(214, 164, 148, 0.14), transparent 32%),
+        linear-gradient(145deg, #141820, #191b26 54%, #11151d);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      color: inherit;
+      cursor: pointer;
+    }
+
+    .app {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto;
+      gap: 10px;
+      height: 100%;
+      padding: 14px;
+    }
+
+    .app::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.035), transparent 42%),
+        rgba(0, 0, 0, 0.04);
+      pointer-events: none;
+    }
+
+    .topbar,
+    .searchbar,
+    .content,
+    .footer {
+      position: relative;
+      z-index: 1;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(var(--accent-rgb), 0.42);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.075);
+      color: var(--accent);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .count {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 620;
+    }
+
+    .icon-button {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.075);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+    }
+
+    .icon-button.active,
+    .icon-button:hover {
+      border-color: rgba(var(--accent-rgb), 0.45);
+      color: var(--accent);
+      background: rgba(var(--accent-rgb), 0.11);
+    }
+
+    .searchbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      height: 38px;
+      padding: 0 11px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.075);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+    }
+
+    .input-wrap svg {
+      flex: 0 0 auto;
+      color: var(--faint);
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: rgba(9, 12, 18, 0.48);
+      color: var(--text);
+    }
+
+    .input-wrap input {
+      height: 100%;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .filters {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 7px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+
+    .filters::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      min-height: 28px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      border-color: rgba(var(--accent-rgb), 0.48);
+      background: rgba(var(--accent-rgb), 0.14);
+      color: var(--accent);
+    }
+
+    .content {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-content: start;
+      gap: 8px;
+      height: 100%;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(var(--accent-rgb), 0.35) rgba(255, 255, 255, 0.08);
+    }
+
+    .card {
+      position: relative;
+      display: grid;
+      grid-template-rows: 32px 30px;
+      gap: 4px;
+      height: 112px;
+      overflow: hidden;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.072);
+      -webkit-backdrop-filter: blur(22px);
+      backdrop-filter: blur(22px);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.14);
+      cursor: copy;
+    }
+
+    .card:hover {
+      border-color: rgba(var(--accent-rgb), 0.34);
+      background: rgba(255, 255, 255, 0.086);
+    }
+
+    .card-top {
+      min-width: 0;
+      height: 32px;
+      padding-right: 30px;
+    }
+
+    .title-area {
+      min-width: 0;
+      height: 32px;
+    }
+
+    .snippet-title {
+      margin: 0;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      min-height: 30px;
+      font-size: 11.5px;
+      line-height: 1.25;
+      font-weight: 800;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .snippet-meta {
+      display: none;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 680;
+    }
+
+    .card-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      display: flex;
+    }
+
+    .tile-footer {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 5px;
+    }
+
+    .mini-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.055);
+      color: rgba(255, 255, 255, 0.72);
+      line-height: 0;
+    }
+
+    .mini-button svg {
+      width: 13px;
+      height: 13px;
+      display: block;
+      flex: 0 0 auto;
+    }
+
+    .mini-button:hover,
+    .mini-button.favorite-on {
+      color: var(--accent);
+      border-color: rgba(var(--accent-rgb), 0.4);
+      background: rgba(var(--accent-rgb), 0.1);
+    }
+
+    .mini-button.delete:hover {
+      color: var(--danger);
+      border-color: rgba(233, 161, 168, 0.42);
+      background: rgba(233, 161, 168, 0.1);
+    }
+
+    .snippet-body {
+      display: -webkit-box;
+      margin: -3px 0 0;
+      overflow: hidden;
+      min-width: 0;
+      height: 30px;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      color: rgba(255, 255, 255, 0.66);
+      font-size: 11px;
+      line-height: 1.35;
+      white-space: normal;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+
+    .empty {
+      display: grid;
+      grid-column: 1 / -1;
+      place-items: center;
+      height: 100%;
+      padding: 20px;
+      border: 1px dashed rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.4;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .footer button,
+    .primary-button,
+    .secondary-button,
+    .danger-button {
+      min-height: 35px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 780;
+    }
+
+    .primary-button {
+      border: 1px solid rgba(var(--accent-rgb), 0.42);
+      background: rgba(var(--accent-rgb), 0.88);
+      color: #101918;
+    }
+
+    .secondary-button {
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.075);
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .danger-button {
+      border: 1px solid rgba(233, 161, 168, 0.38);
+      background: rgba(233, 161, 168, 0.1);
+      color: #f4c5ca;
+    }
+
+    .panel {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: none;
+      padding: 14px;
+      background:
+        radial-gradient(circle at 18% 10%, rgba(var(--accent-rgb), 0.16), transparent 34%),
+        linear-gradient(145deg, rgba(20, 24, 32, 0.97), rgba(18, 20, 29, 0.98));
+    }
+
+    .panel.active {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 840;
+    }
+
+    .form {
+      display: grid;
+      align-content: start;
+      gap: 9px;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    label {
+      display: grid;
+      gap: 5px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 740;
+    }
+
+    .form input,
+    .form select {
+      height: 36px;
+      padding: 0 10px;
+    }
+
+    .form textarea {
+      min-height: 234px;
+      resize: vertical;
+      padding: 10px;
+      line-height: 1.4;
+    }
+
+    .panel-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .manage-grid {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 2px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(var(--accent-rgb), 0.35) rgba(255, 255, 255, 0.08);
+    }
+
+    .settings-section {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.055);
+    }
+
+    .section-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 820;
+      color: var(--text);
+    }
+
+    .vibe-row,
+    .add-category-row,
+    .category-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vibe-row input[type="color"] {
+      width: 42px;
+      height: 36px;
+      padding: 3px;
+      border-radius: 11px;
+      cursor: pointer;
+    }
+
+    .vibe-row input[type="text"],
+    .add-category-row input,
+    .category-row input {
+      height: 34px;
+      padding: 0 9px;
+      font-size: 12px;
+      font-weight: 720;
+    }
+
+    .add-category-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    .category-list {
+      display: grid;
+      gap: 7px;
+    }
+
+    .category-row {
+      grid-template-columns: 1fr auto;
+    }
+
+    .toast-stack {
+      position: absolute;
+      right: 14px;
+      bottom: 60px;
+      z-index: 10;
+      display: grid;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      max-width: 220px;
+      padding: 9px 11px;
+      border: 1px solid rgba(var(--accent-rgb), 0.28);
+      border-radius: 10px;
+      background: rgba(20, 24, 32, 0.92);
+      color: var(--text);
+      box-shadow: var(--shadow);
+      font-size: 12px;
+      font-weight: 740;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .hidden-input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3c4.2 5 7 8.7 7 12.1A6.7 6.7 0 0 1 12 22a6.7 6.7 0 0 1-7-6.9C5 11.7 7.8 8 12 3Z" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <h1>Dewdrops</h1>
+          <div class="count" id="countLabel">0 drops</div>
+        </div>
+      </div>
+      <button class="icon-button" id="manageButton" type="button" title="Manage" aria-label="Manage">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.8 1.8 0 0 0 .36 2l.05.05a2.1 2.1 0 0 1-2.97 2.97l-.05-.05a1.8 1.8 0 0 0-2-.36 1.8 1.8 0 0 0-1.08 1.65V21a2.1 2.1 0 0 1-4.2 0v-.07A1.8 1.8 0 0 0 8.4 19.3a1.8 1.8 0 0 0-2 .36l-.05.05a2.1 2.1 0 1 1-2.97-2.97l.05-.05a1.8 1.8 0 0 0 .36-2 1.8 1.8 0 0 0-1.65-1.08H2a2.1 2.1 0 0 1 0-4.2h.07A1.8 1.8 0 0 0 3.7 8.4a1.8 1.8 0 0 0-.36-2l-.05-.05A2.1 2.1 0 1 1 6.26 3.4l.05.05a1.8 1.8 0 0 0 2 .36h.01A1.8 1.8 0 0 0 9.4 2.15V2a2.1 2.1 0 0 1 4.2 0v.07a1.8 1.8 0 0 0 1.08 1.65 1.8 1.8 0 0 0 2-.36l.05-.05a2.1 2.1 0 1 1 2.97 2.97l-.05.05a1.8 1.8 0 0 0-.36 2v.01A1.8 1.8 0 0 0 21.85 9.4H22a2.1 2.1 0 0 1 0 4.2h-.07A1.8 1.8 0 0 0 20.3 14.7l-.9.3Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+
+    <section class="searchbar">
+      <div class="input-wrap">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m16.5 16.5 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="searchInput" type="search" placeholder="Search drops">
+      </div>
+      <button class="icon-button" id="newButton" type="button" title="New drop" aria-label="New drop">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      </button>
+    </section>
+
+    <nav class="filters" id="filters" aria-label="Filters"></nav>
+
+    <section class="content">
+      <div class="list" id="snippetList"></div>
+    </section>
+
+    <footer class="footer">
+      <button class="secondary-button" id="exportButton" type="button">Export JSON</button>
+      <button class="secondary-button" id="importButton" type="button">Import JSON</button>
+    </footer>
+
+    <section class="panel" id="editorPanel" aria-label="Editor">
+      <header class="panel-header">
+        <p class="panel-title" id="editorTitle">New Drop</p>
+        <button class="icon-button" id="closeEditor" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <form class="form" id="snippetForm">
+        <label>Title
+          <input id="titleInput" type="text" maxlength="28" required>
+        </label>
+        <label>Category
+          <input id="categoryInput" type="text" maxlength="32" list="categoryOptions" required>
+          <datalist id="categoryOptions"></datalist>
+        </label>
+        <label>Text
+          <textarea id="bodyInput" required></textarea>
+        </label>
+      </form>
+      <div class="panel-actions">
+        <button class="secondary-button" id="cancelEditor" type="button">Cancel</button>
+        <button class="primary-button" id="saveSnippet" type="submit" form="snippetForm">Save Drop</button>
+      </div>
+    </section>
+
+    <section class="panel" id="managePanel" aria-label="Manage">
+      <header class="panel-header">
+        <p class="panel-title">Settings</p>
+        <button class="icon-button" id="closeManage" type="button" aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </header>
+      <div class="manage-grid">
+        <section class="settings-section">
+          <p class="section-title">Vibe</p>
+          <div class="vibe-row">
+            <input id="vibePicker" type="color" aria-label="Vibe colour">
+            <input id="vibeHex" type="text" maxlength="7" aria-label="Vibe hex">
+            <button class="secondary-button" id="resetVibeButton" type="button">Reset</button>
+          </div>
+        </section>
+
+        <section class="settings-section">
+          <p class="section-title">Categories</p>
+          <div class="add-category-row">
+            <input id="newCategoryInput" type="text" maxlength="32" placeholder="New category">
+            <button class="primary-button" id="addCategoryButton" type="button">Add</button>
+          </div>
+          <div class="category-list" id="categoryList"></div>
+        </section>
+
+        <section class="settings-section">
+          <p class="section-title">Library</p>
+          <button class="primary-button" id="seedButton" type="button">Restore Starters</button>
+          <button class="secondary-button" id="copyAllButton" type="button">Copy All JSON</button>
+          <button class="danger-button" id="clearButton" type="button">Clear Library</button>
+        </section>
+      </div>
+      <div></div>
+    </section>
+
+    <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+    <input class="hidden-input" id="importFile" type="file" accept="application/json,.json">
+  </main>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "dewdrops.snippets.v1";
+      const CATEGORY_KEY = "dewdrops.categories.v1";
+      const VIBE_KEY = "dewdrops.vibe.v1";
+      const DEFAULT_VIBE = "#9bd8c5";
+      const MAX_IMPORT_BYTES = 1024 * 1024;
+
+      const starters = [
+        {
+          title: "Polish this prompt",
+          category: "Prompts",
+          body: "Rewrite this prompt so it is clearer, more specific, and easier for an AI agent to execute. Keep my intent intact. Return the improved prompt only.",
+          favorite: true
+        },
+        {
+          title: "Friendly follow-up",
+          category: "Replies",
+          body: "Hey, just following up on this. No rush, but wanted to keep it on your radar. Thanks.",
+          favorite: false
+        },
+        {
+          title: "Bug report shape",
+          category: "Work",
+          body: "Issue:\nSteps to reproduce:\nExpected:\nActual:\nNotes:",
+          favorite: true
+        },
+        {
+          title: "Install note",
+          category: "Support",
+          body: "If macOS blocks first launch, right-click the app, choose Open, then confirm Open again.",
+          favorite: false
+        }
+      ];
+
+      const elements = {
+        countLabel: document.getElementById("countLabel"),
+        searchInput: document.getElementById("searchInput"),
+        filters: document.getElementById("filters"),
+        snippetList: document.getElementById("snippetList"),
+        newButton: document.getElementById("newButton"),
+        manageButton: document.getElementById("manageButton"),
+        exportButton: document.getElementById("exportButton"),
+        importButton: document.getElementById("importButton"),
+        importFile: document.getElementById("importFile"),
+        editorPanel: document.getElementById("editorPanel"),
+        editorTitle: document.getElementById("editorTitle"),
+        closeEditor: document.getElementById("closeEditor"),
+        cancelEditor: document.getElementById("cancelEditor"),
+        snippetForm: document.getElementById("snippetForm"),
+        titleInput: document.getElementById("titleInput"),
+        categoryInput: document.getElementById("categoryInput"),
+        categoryOptions: document.getElementById("categoryOptions"),
+        bodyInput: document.getElementById("bodyInput"),
+        managePanel: document.getElementById("managePanel"),
+        closeManage: document.getElementById("closeManage"),
+        vibePicker: document.getElementById("vibePicker"),
+        vibeHex: document.getElementById("vibeHex"),
+        resetVibeButton: document.getElementById("resetVibeButton"),
+        newCategoryInput: document.getElementById("newCategoryInput"),
+        addCategoryButton: document.getElementById("addCategoryButton"),
+        categoryList: document.getElementById("categoryList"),
+        seedButton: document.getElementById("seedButton"),
+        copyAllButton: document.getElementById("copyAllButton"),
+        clearButton: document.getElementById("clearButton"),
+        toastStack: document.getElementById("toastStack")
+      };
+
+      let snippets = loadSnippets();
+      let customCategories = loadCategories();
+      let vibeColor = loadVibe();
+      let activeFilter = "All";
+      let editingId = null;
+      let clearConfirmTimer = null;
+      applyVibe(vibeColor);
+
+      function makeSnippet(input) {
+        const now = new Date().toISOString();
+        return {
+          id: input.id || `drop-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          title: String(input.title || "Untitled").slice(0, 28),
+          category: cleanCategory(input.category || "Notes"),
+          body: String(input.body || ""),
+          favorite: Boolean(input.favorite),
+          createdAt: input.createdAt || now,
+          updatedAt: input.updatedAt || now
+        };
+      }
+
+      function loadSnippets() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (Array.isArray(saved)) return saved.map(makeSnippet);
+        } catch {}
+        return starters.map(makeSnippet);
+      }
+
+      function saveSnippets() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(snippets));
+      }
+
+      function loadCategories() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(CATEGORY_KEY) || "null");
+          if (Array.isArray(saved)) return saved.map(cleanCategory).filter(Boolean);
+        } catch {}
+        return [];
+      }
+
+      function saveCategories() {
+        localStorage.setItem(CATEGORY_KEY, JSON.stringify(customCategories));
+      }
+
+      function loadVibe() {
+        return normalizeHex(localStorage.getItem(VIBE_KEY)) || DEFAULT_VIBE;
+      }
+
+      function saveVibe(hex) {
+        vibeColor = normalizeHex(hex) || DEFAULT_VIBE;
+        localStorage.setItem(VIBE_KEY, vibeColor);
+        applyVibe(vibeColor);
+        renderVibeControls();
+      }
+
+      function applyVibe(hex) {
+        const rgb = hexToRgb(hex);
+        document.documentElement.style.setProperty("--accent", hex);
+        document.documentElement.style.setProperty("--accent-rgb", `${rgb.r}, ${rgb.g}, ${rgb.b}`);
+      }
+
+      function normalizeHex(value) {
+        const raw = String(value || "").trim().replace(/^#/, "");
+        if (/^[0-9a-fA-F]{3}$/.test(raw)) {
+          return `#${raw.split("").map((char) => char + char).join("")}`.toLowerCase();
+        }
+        if (/^[0-9a-fA-F]{6}$/.test(raw)) return `#${raw.toLowerCase()}`;
+        return "";
+      }
+
+      function hexToRgb(hex) {
+        const safe = normalizeHex(hex) || DEFAULT_VIBE;
+        const value = parseInt(safe.slice(1), 16);
+        return {
+          r: (value >> 16) & 255,
+          g: (value >> 8) & 255,
+          b: value & 255
+        };
+      }
+
+      function cleanCategory(value) {
+        return String(value || "Notes").trim().replace(/\s+/g, " ").slice(0, 32) || "Notes";
+      }
+
+      function categories() {
+        return Array.from(new Set([...customCategories, ...snippets.map((snippet) => snippet.category)])).sort((a, b) => a.localeCompare(b));
+      }
+
+      function filteredSnippets() {
+        const query = elements.searchInput.value.trim().toLowerCase();
+        return snippets
+          .filter((snippet) => {
+            const matchesFilter = activeFilter === "All" || (activeFilter === "Favorites" ? snippet.favorite : snippet.category === activeFilter);
+            const haystack = `${snippet.title} ${snippet.category} ${snippet.body}`.toLowerCase();
+            return matchesFilter && (!query || haystack.includes(query));
+          })
+          .sort((a, b) => Number(b.favorite) - Number(a.favorite) || new Date(b.updatedAt) - new Date(a.updatedAt));
+      }
+
+      function render() {
+        renderFilters();
+        renderList();
+        renderCategoryOptions();
+        renderSettings();
+        elements.countLabel.textContent = `${snippets.length} ${snippets.length === 1 ? "drop" : "drops"}`;
+      }
+
+      function renderFilters() {
+        const filters = ["All", "Favorites", ...categories()];
+        if (!filters.includes(activeFilter)) activeFilter = "All";
+        elements.filters.innerHTML = "";
+
+        for (const filter of filters) {
+          const button = document.createElement("button");
+          button.className = `chip${filter === activeFilter ? " active" : ""}`;
+          button.type = "button";
+          button.textContent = filter;
+          button.addEventListener("click", () => {
+            activeFilter = filter;
+            render();
+          });
+          elements.filters.appendChild(button);
+        }
+      }
+
+      function renderList() {
+        const list = filteredSnippets();
+        elements.snippetList.innerHTML = "";
+
+        if (!list.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = snippets.length ? "No matching drops." : "No drops yet.";
+          elements.snippetList.appendChild(empty);
+          return;
+        }
+
+        for (const snippet of list) {
+          elements.snippetList.appendChild(snippetCard(snippet));
+        }
+      }
+
+      function snippetCard(snippet) {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.title = "Click to copy";
+        card.addEventListener("click", () => copySnippet(snippet.body));
+
+        const top = document.createElement("div");
+        top.className = "card-top";
+
+        const titleArea = document.createElement("div");
+        titleArea.className = "title-area";
+        const title = document.createElement("p");
+        title.className = "snippet-title";
+        title.textContent = compactTitle(snippet.title);
+        const meta = document.createElement("div");
+        meta.className = "snippet-meta";
+        meta.textContent = snippet.category;
+        titleArea.append(title, meta);
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        actions.append(
+          actionButton(snippet.favorite ? "favorite-on" : "", "Toggle favorite", starIcon(), () => toggleFavorite(snippet.id))
+        );
+
+        top.append(titleArea, actions);
+
+        const body = document.createElement("p");
+        body.className = "snippet-body";
+        body.textContent = compactPreview(snippet.body);
+
+        const footer = document.createElement("div");
+        footer.className = "tile-footer";
+        footer.append(
+          actionButton("", "Edit", editIcon(), () => openEditor(snippet.id)),
+          actionButton("delete", "Delete", trashIcon(), () => deleteSnippet(snippet.id))
+        );
+
+        card.append(top, body, footer);
+        return card;
+      }
+
+      function actionButton(className, title, icon, handler) {
+        const button = document.createElement("button");
+        button.className = `mini-button ${className}`.trim();
+        button.type = "button";
+        button.title = title;
+        button.setAttribute("aria-label", title);
+        button.innerHTML = icon;
+        button.addEventListener("click", (event) => {
+          event.stopPropagation();
+          handler();
+        });
+        return button;
+      }
+
+      function compactTitle(text) {
+        return compactText(text, 28);
+      }
+
+      function compactPreview(text) {
+        return compactText(text, 40);
+      }
+
+      function compactText(text, limit) {
+        const clean = String(text || "").replace(/\s+/g, " ").trim();
+        if (clean.length <= limit) return clean;
+        const slice = clean.slice(0, limit + 1);
+        const boundary = slice.search(/\s+\S*$/);
+        const trimmed = (boundary > 18 ? slice.slice(0, boundary) : clean.slice(0, limit)).trim();
+        return `${trimmed}...`;
+      }
+
+      function renderCategoryOptions() {
+        elements.categoryOptions.innerHTML = "";
+        for (const category of categories()) {
+          const option = document.createElement("option");
+          option.value = category;
+          elements.categoryOptions.appendChild(option);
+        }
+      }
+
+      function renderSettings() {
+        renderVibeControls();
+        renderCategoryManager();
+      }
+
+      function renderVibeControls() {
+        elements.vibePicker.value = vibeColor;
+        elements.vibeHex.value = vibeColor.toUpperCase();
+      }
+
+      function renderCategoryManager() {
+        elements.categoryList.innerHTML = "";
+        const list = categories();
+
+        if (!list.length) {
+          const empty = document.createElement("div");
+          empty.className = "empty";
+          empty.textContent = "No categories yet.";
+          elements.categoryList.appendChild(empty);
+          return;
+        }
+
+        for (const category of list) {
+          const row = document.createElement("div");
+          row.className = "category-row";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.maxLength = 32;
+          input.value = category;
+          input.setAttribute("aria-label", `Rename ${category}`);
+          input.addEventListener("change", () => renameCategory(category, input.value));
+
+          const remove = actionButton("delete", "Delete category", trashIcon(), () => deleteCategory(category));
+          row.append(input, remove);
+          elements.categoryList.appendChild(row);
+        }
+      }
+
+      function openEditor(id = null) {
+        editingId = id;
+        const snippet = id ? snippets.find((item) => item.id === id) : null;
+        elements.editorTitle.textContent = snippet ? "Edit Drop" : "New Drop";
+        elements.titleInput.value = snippet?.title || "";
+        elements.categoryInput.value = snippet?.category || (activeFilter !== "All" && activeFilter !== "Favorites" ? activeFilter : "Prompts");
+        elements.bodyInput.value = snippet?.body || "";
+        elements.editorPanel.classList.add("active");
+        elements.titleInput.focus();
+      }
+
+      function closeEditor() {
+        editingId = null;
+        elements.editorPanel.classList.remove("active");
+        elements.snippetForm.reset();
+      }
+
+      function saveEditor(event) {
+        event.preventDefault();
+        const now = new Date().toISOString();
+        const payload = {
+          title: elements.titleInput.value.trim() || "Untitled",
+          category: cleanCategory(elements.categoryInput.value),
+          body: elements.bodyInput.value,
+          updatedAt: now
+        };
+        ensureCategory(payload.category);
+
+        if (editingId) {
+          snippets = snippets.map((snippet) => snippet.id === editingId ? { ...snippet, ...payload } : snippet);
+          showToast("Drop saved");
+        } else {
+          snippets.unshift(makeSnippet({ ...payload, createdAt: now }));
+          showToast("Drop added");
+        }
+
+        saveSnippets();
+        closeEditor();
+        render();
+      }
+
+      function ensureCategory(category) {
+        const clean = cleanCategory(category);
+        if (!customCategories.includes(clean)) {
+          customCategories.push(clean);
+          customCategories = categories();
+          saveCategories();
+        }
+      }
+
+      function addCategory() {
+        if (!elements.newCategoryInput.value.trim()) return;
+        const category = cleanCategory(elements.newCategoryInput.value);
+        if (categories().includes(category)) {
+          showToast("Category already exists");
+          return;
+        }
+        customCategories.push(category);
+        customCategories = categories();
+        saveCategories();
+        elements.newCategoryInput.value = "";
+        render();
+        showToast("Category added");
+      }
+
+      function renameCategory(previous, next) {
+        const cleanNext = cleanCategory(next);
+        if (!cleanNext || cleanNext === previous) {
+          renderCategoryManager();
+          return;
+        }
+        if (categories().includes(cleanNext)) {
+          showToast("Category already exists");
+          renderCategoryManager();
+          return;
+        }
+
+        customCategories = customCategories.map((category) => category === previous ? cleanNext : category);
+        snippets = snippets.map((snippet) => snippet.category === previous ? { ...snippet, category: cleanNext, updatedAt: new Date().toISOString() } : snippet);
+        if (activeFilter === previous) activeFilter = cleanNext;
+        saveCategories();
+        saveSnippets();
+        render();
+        showToast("Category renamed");
+      }
+
+      function deleteCategory(category) {
+        customCategories = customCategories.filter((item) => item !== category);
+        snippets = snippets.map((snippet) => snippet.category === category ? { ...snippet, category: "Notes", updatedAt: new Date().toISOString() } : snippet);
+        if (snippets.some((snippet) => snippet.category === "Notes") && !customCategories.includes("Notes")) customCategories.push("Notes");
+        if (activeFilter === category) activeFilter = "All";
+        customCategories = categories();
+        saveCategories();
+        saveSnippets();
+        render();
+        showToast("Category deleted");
+      }
+
+      function toggleFavorite(id) {
+        snippets = snippets.map((snippet) => snippet.id === id ? { ...snippet, favorite: !snippet.favorite, updatedAt: new Date().toISOString() } : snippet);
+        saveSnippets();
+        render();
+      }
+
+      function deleteSnippet(id) {
+        const snippet = snippets.find((item) => item.id === id);
+        if (!snippet) return;
+        snippets = snippets.filter((item) => item.id !== id);
+        saveSnippets();
+        render();
+        showToast("Drop deleted");
+      }
+
+      function copySnippet(text) {
+        if (postNativeMessage({ type: "copy", text })) return;
+        navigator.clipboard?.writeText(text)
+          .then(() => showToast("Copied"))
+          .catch(() => fallbackCopy(text));
+      }
+
+      function fallbackCopy(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+        showToast("Copied");
+      }
+
+      function postNativeMessage(message) {
+        const handler = window.webkit?.messageHandlers?.dewdropsNative;
+        if (!handler) return false;
+        handler.postMessage(message);
+        return true;
+      }
+
+      window.dewdropsNativeCopied = () => showToast("Copied");
+
+      function exportJson() {
+        const json = JSON.stringify(snippets, null, 2);
+        copySnippet(json);
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "dewdrops-library.json";
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function importJson(file) {
+        if (!file) return;
+        if (file.size > MAX_IMPORT_BYTES) {
+          showToast("File too large");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const parsed = JSON.parse(String(reader.result));
+            if (!Array.isArray(parsed)) throw new Error("Invalid library");
+            snippets = parsed.map(makeSnippet);
+            saveSnippets();
+            activeFilter = "All";
+            render();
+            showToast("Library imported");
+          } catch {
+            showToast("Invalid JSON");
+          }
+        };
+        reader.onerror = () => showToast("Could not read file");
+        reader.readAsText(file);
+      }
+
+      function restoreStarters() {
+        const existingTitles = new Set(snippets.map((snippet) => snippet.title.toLowerCase()));
+        const additions = starters.filter((item) => !existingTitles.has(item.title.toLowerCase())).map(makeSnippet);
+        snippets = [...additions, ...snippets];
+        saveSnippets();
+        render();
+        showToast(additions.length ? "Starters restored" : "Starters already there");
+      }
+
+      function clearLibrary() {
+        if (!elements.clearButton.dataset.confirming) {
+          elements.clearButton.dataset.confirming = "true";
+          elements.clearButton.textContent = "Click Again to Clear";
+          showToast("Click clear again to confirm");
+          clearConfirmTimer = window.setTimeout(resetClearButton, 3200);
+          return;
+        }
+
+        resetClearButton();
+        snippets = [];
+        saveSnippets();
+        activeFilter = "All";
+        render();
+        showToast("Library cleared");
+      }
+
+      function resetClearButton() {
+        window.clearTimeout(clearConfirmTimer);
+        clearConfirmTimer = null;
+        delete elements.clearButton.dataset.confirming;
+        elements.clearButton.textContent = "Clear Library";
+      }
+
+      function showToast(message) {
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        elements.toastStack.appendChild(toast);
+        window.setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.style.transform = "translateY(8px) scale(0.98)";
+        }, 1500);
+        window.setTimeout(() => toast.remove(), 1900);
+      }
+
+      function starIcon() {
+        return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>';
+      }
+
+      function editIcon() {
+        return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m13.5 6.5 4 4" stroke="currentColor" stroke-width="2"/></svg>';
+      }
+
+      function trashIcon() {
+        return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      }
+
+      elements.searchInput.addEventListener("input", render);
+      elements.newButton.addEventListener("click", () => openEditor());
+      elements.manageButton.addEventListener("click", () => elements.managePanel.classList.add("active"));
+      elements.exportButton.addEventListener("click", exportJson);
+      elements.importButton.addEventListener("click", () => elements.importFile.click());
+      elements.importFile.addEventListener("change", () => {
+        importJson(elements.importFile.files[0]);
+        elements.importFile.value = "";
+      });
+      elements.closeEditor.addEventListener("click", closeEditor);
+      elements.cancelEditor.addEventListener("click", closeEditor);
+      elements.snippetForm.addEventListener("submit", saveEditor);
+      elements.closeManage.addEventListener("click", () => elements.managePanel.classList.remove("active"));
+      elements.vibePicker.addEventListener("input", () => saveVibe(elements.vibePicker.value));
+      elements.vibeHex.addEventListener("change", () => {
+        const next = normalizeHex(elements.vibeHex.value);
+        if (next) {
+          saveVibe(next);
+        } else {
+          renderVibeControls();
+          showToast("Invalid hex");
+        }
+      });
+      elements.resetVibeButton.addEventListener("click", () => {
+        saveVibe(DEFAULT_VIBE);
+        showToast("Vibe reset");
+      });
+      elements.addCategoryButton.addEventListener("click", addCategory);
+      elements.newCategoryInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") addCategory();
+      });
+      elements.seedButton.addEventListener("click", restoreStarters);
+      elements.copyAllButton.addEventListener("click", () => copySnippet(JSON.stringify(snippets, null, 2)));
+      elements.clearButton.addEventListener("click", clearLibrary);
+
+      render();
+    })();
+  </script>
+</body>
+</html>
