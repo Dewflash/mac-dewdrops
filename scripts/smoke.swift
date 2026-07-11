@@ -130,6 +130,65 @@ expect("SMOKE-STORAGE", jsString("""
 (() => { try { localStorage.setItem('smoke.probe', '1'); const v = localStorage.getItem('smoke.probe'); localStorage.removeItem('smoke.probe'); return 'RW:' + v; } catch (e) { return 'ERR:' + e.name; } })()
 """), "RW:1")
 
+// SMOKE-LOOKS: all four looks are available in Settings, the selected look
+// persists independently, and switching it never writes the snippet library.
+expect("SMOKE-LOOKS default", jsString("document.documentElement.dataset.look"), "original")
+expect("SMOKE-LOOKS choices", jsString("""
+[...document.querySelectorAll('[data-look-value]')].map((button) => button.dataset.lookValue).join(',')
+"""), "original,native,paper,mono")
+expect("SMOKE-LOOKS panel", jsString("""
+(() => {
+  document.getElementById('manageButton').click();
+  const tab = document.querySelector('[data-settings-tab="appearance"]');
+  const pane = document.querySelector('[data-settings-pane="appearance"]');
+  return tab.getAttribute('aria-selected') + ':' + pane.hidden + ':' + document.getElementById('managePanel').classList.contains('active');
+})()
+"""), "true:false:true")
+expect("SMOKE-LOOKS tabs", jsString("""
+(() => {
+  const categories = document.querySelector('[data-settings-tab="categories"]');
+  const appearance = document.querySelector('[data-settings-tab="appearance"]');
+  categories.click();
+  const categoriesState = categories.getAttribute('aria-selected') + ':' + document.querySelector('[data-settings-pane="categories"]').hidden;
+  appearance.click();
+  const appearanceState = appearance.getAttribute('aria-selected') + ':' + document.querySelector('[data-settings-pane="appearance"]').hidden;
+  return categoriesState + ':' + appearanceState;
+})()
+"""), "true:false:true:false")
+expect("SMOKE-LOOKS cycle", jsString("""
+(() => {
+  const states = [];
+  for (const name of ['original', 'native', 'paper', 'mono']) {
+    const button = document.querySelector('[data-look-value="' + name + '"]');
+    button.click();
+    states.push(document.documentElement.dataset.look + ':' + button.getAttribute('aria-pressed'));
+  }
+  return states.join('|');
+})()
+"""), "original:true|native:true|paper:true|mono:true")
+expect("SMOKE-LOOKS select", jsString("""
+(() => {
+  document.querySelector('[data-look-value="native"]').click();
+  return [
+    document.documentElement.dataset.look,
+    localStorage.getItem('dewdrops.look.v1'),
+    document.getElementById('countLabel').textContent,
+    localStorage.getItem('dewdrops.snippets.v1') === null ? 'SNIPPETS_UNTOUCHED' : 'SNIPPETS_WRITTEN'
+  ].join(':');
+})()
+"""), "native:native:4 drops:SNIPPETS_UNTOUCHED")
+bridge.loaded = false
+webView.reload()
+guard spin(seconds: 15, until: { bridge.loaded }) else {
+    fail("SMOKE-LOOKS: reload never finished", exitCode: 2)
+}
+expect("SMOKE-LOOKS persist", jsString("""
+document.documentElement.dataset.look + ':' + document.querySelector('[data-look-value="native"]').getAttribute('aria-pressed')
+"""), "native:true")
+expect("SMOKE-LOOKS restore", jsString("""
+(() => { document.querySelector('[data-look-value="original"]').click(); return document.documentElement.dataset.look + ':' + localStorage.getItem('dewdrops.look.v1'); })()
+"""), "original:original")
+
 // SMOKE-COPY: clicking a card posts {type:"copy"} across the native bridge with
 // the exact snippet body (newlines and all).
 let messagesBefore = bridge.messages.count

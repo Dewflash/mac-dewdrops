@@ -4,6 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Dewdrops</title>
+  <script>
+    (() => {
+      const appearance = Object.freeze({
+        key: "dewdrops.look.v1",
+        looks: Object.freeze(["original", "native", "paper", "mono"]),
+        defaultLook: "original"
+      });
+      window.dewdropsAppearance = appearance;
+      try {
+        const saved = localStorage.getItem(appearance.key);
+        document.documentElement.dataset.look = appearance.looks.includes(saved) ? saved : appearance.defaultLook;
+      } catch {
+        document.documentElement.dataset.look = appearance.defaultLook;
+      }
+    })();
+  </script>
   <style>
     :root {
       color-scheme: dark;
@@ -422,6 +438,10 @@
       gap: 10px;
     }
 
+    #managePanel.active {
+      grid-template-rows: auto auto 1fr;
+    }
+
     .panel-header {
       display: flex;
       align-items: center;
@@ -562,6 +582,983 @@
     .hidden-input {
       display: none;
     }
+
+    .settings-tabs {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.045);
+    }
+
+    .settings-tab {
+      min-height: 30px;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 10.5px;
+      font-weight: 760;
+    }
+
+    .settings-tab.active {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.09);
+      box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.18);
+    }
+
+    .settings-pane {
+      display: none;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .settings-pane.active {
+      display: grid;
+    }
+
+    .look-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .look-copy span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+
+    .look-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .look-choice {
+      display: grid;
+      gap: 7px;
+      padding: 7px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--muted);
+      text-align: left;
+    }
+
+    .look-choice:hover,
+    .look-choice[aria-pressed="true"] {
+      border-color: rgba(var(--accent-rgb), 0.54);
+      background: rgba(var(--accent-rgb), 0.09);
+      color: var(--text);
+    }
+
+    .look-preview {
+      position: relative;
+      height: 70px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 7px;
+      background: #151922;
+    }
+
+    .look-preview::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      right: 8px;
+      height: 9px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .look-preview i {
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      height: 12px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .look-preview i:nth-child(1) {
+      top: 27px;
+    }
+
+    .look-preview i:nth-child(2) {
+      top: 45px;
+    }
+
+    .look-preview-original {
+      background:
+        radial-gradient(circle at 18% 8%, rgba(var(--accent-rgb), 0.24), transparent 44%),
+        #171a24;
+    }
+
+    .look-preview-original i {
+      right: auto;
+      width: 34px;
+      height: 31px;
+      top: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .look-preview-original i:nth-child(2) {
+      left: 48px;
+    }
+
+    .look-preview-native {
+      background: #15161a;
+    }
+
+    .look-preview-native i {
+      background: #2b2d33;
+    }
+
+    .look-preview-paper {
+      background: #eee9df;
+    }
+
+    .look-preview-paper::before {
+      background: rgba(66, 56, 42, 0.15);
+    }
+
+    .look-preview-paper i {
+      right: auto;
+      width: 49px;
+      height: 35px;
+      top: 26px;
+      background: #fffdf8;
+      box-shadow: 0 2px 4px rgba(54, 44, 30, 0.08);
+    }
+
+    .look-preview-paper i:nth-child(2) {
+      left: 64px;
+      background: #e5efe8;
+    }
+
+    .look-preview-mono {
+      border-radius: 0;
+      background: #090a0a;
+    }
+
+    .look-preview-mono::before {
+      border: 1px solid #3a3d3b;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .look-preview-mono i {
+      left: 38px;
+      border-radius: 0;
+      background: #1b1d1c;
+    }
+
+    .look-preview-mono::after {
+      content: "";
+      position: absolute;
+      top: 26px;
+      bottom: 8px;
+      left: 8px;
+      width: 23px;
+      border-right: 1px solid #323432;
+      background: linear-gradient(var(--accent) 0 10px, transparent 10px);
+    }
+
+    .look-label {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .look-radio {
+      width: 12px;
+      height: 12px;
+      border: 1px solid var(--faint);
+      border-radius: 50%;
+    }
+
+    .look-choice[aria-pressed="true"] .look-radio {
+      border: 3px solid var(--accent);
+    }
+
+    .look-label strong {
+      display: block;
+      color: inherit;
+      font-size: 10.5px;
+      font-weight: 780;
+    }
+
+    .look-label small {
+      display: block;
+      margin-top: 1px;
+      color: var(--faint);
+      font-size: 8.5px;
+    }
+
+    .look-note {
+      margin: 0;
+      color: var(--faint);
+      font-size: 9.5px;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    /* Native List */
+    html[data-look="native"] {
+      --panel: rgba(28, 29, 33, 0.96);
+      --panel-2: rgba(255, 255, 255, 0.055);
+      --border: rgba(255, 255, 255, 0.105);
+      --text: rgba(248, 249, 250, 0.94);
+      --muted: rgba(226, 229, 234, 0.56);
+      --faint: rgba(226, 229, 234, 0.34);
+    }
+
+    html[data-look="native"] body {
+      background:
+        radial-gradient(circle at 20% -10%, rgba(var(--accent-rgb), 0.13), transparent 34%),
+        #15161a;
+    }
+
+    html[data-look="native"] .app {
+      gap: 6px;
+      padding: 11px 12px 10px;
+    }
+
+    html[data-look="native"] .app::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 25%);
+    }
+
+    html[data-look="native"] .mark {
+      width: 31px;
+      height: 31px;
+      border-radius: 9px;
+      background: rgba(var(--accent-rgb), 0.1);
+      box-shadow: none;
+    }
+
+    html[data-look="native"] .mark svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    html[data-look="native"] h1 {
+      font-size: 16px;
+      font-weight: 680;
+    }
+
+    html[data-look="native"] .count {
+      margin-top: 1px;
+      font-size: 9.5px;
+      font-weight: 560;
+    }
+
+    html[data-look="native"] .icon-button {
+      width: 31px;
+      height: 31px;
+      border-radius: 8px;
+      background: #22242a;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="native"] .input-wrap {
+      height: 36px;
+      border-radius: 9px;
+      background: #25272d;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="native"] .filters {
+      gap: 2px;
+      padding: 3px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: #202126;
+    }
+
+    html[data-look="native"] .chip {
+      flex: 1 0 auto;
+      min-height: 26px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      font-size: 10px;
+      font-weight: 620;
+    }
+
+    html[data-look="native"] .chip.active {
+      color: var(--text);
+      background: #363941;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.22);
+    }
+
+    html[data-look="native"] .list {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-right: 0;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      background: #1c1d21;
+    }
+
+    html[data-look="native"] .card {
+      grid-template-rows: auto auto;
+      gap: 4px;
+      height: 73px;
+      padding: 10px 80px 9px 48px;
+      border: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.075);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="native"] .card:last-child {
+      border-bottom: 0;
+    }
+
+    html[data-look="native"] .card::before {
+      content: "";
+      position: absolute;
+      top: 20px;
+      left: 13px;
+      width: 27px;
+      height: 27px;
+      border-radius: 8px;
+      background: rgba(var(--accent-rgb), 0.12);
+      box-shadow: inset 0 0 0 1px rgba(var(--accent-rgb), 0.13);
+    }
+
+    html[data-look="native"] .card:hover {
+      background: rgba(var(--accent-rgb), 0.07);
+      box-shadow: inset 2px 0 var(--accent);
+    }
+
+    html[data-look="native"] .card-top,
+    html[data-look="native"] .title-area {
+      height: auto;
+      padding-right: 0;
+    }
+
+    html[data-look="native"] .snippet-title {
+      display: block;
+      min-height: 0;
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 660;
+      line-height: 1.2;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    html[data-look="native"] .snippet-meta {
+      display: block;
+      margin-top: 2px;
+      color: var(--faint);
+      font-size: 8px;
+      letter-spacing: 0.55px;
+      text-transform: uppercase;
+    }
+
+    html[data-look="native"] .snippet-body {
+      display: block;
+      height: auto;
+      margin: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    html[data-look="native"] .card-actions {
+      top: 11px;
+      right: 10px;
+    }
+
+    html[data-look="native"] .tile-footer {
+      right: 10px;
+      bottom: 10px;
+      opacity: 0.2;
+      transition: opacity 120ms ease;
+    }
+
+    html[data-look="native"] .card:hover .tile-footer,
+    html[data-look="native"] .card:focus-within .tile-footer {
+      opacity: 1;
+    }
+
+    html[data-look="native"] .mini-button {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      background: #23252a;
+    }
+
+    html[data-look="native"] .footer {
+      gap: 6px;
+    }
+
+    html[data-look="native"] .footer button {
+      min-height: 30px;
+      border-radius: 8px;
+      font-size: 10px;
+    }
+
+    /* Paper Shelf */
+    html[data-look="paper"] {
+      color-scheme: light;
+      --panel: rgba(255, 253, 248, 0.9);
+      --panel-2: rgba(255, 255, 255, 0.68);
+      --border: rgba(79, 66, 47, 0.18);
+      --text: rgba(42, 40, 33, 0.96);
+      --muted: rgba(75, 69, 60, 0.69);
+      --faint: rgba(75, 69, 60, 0.48);
+      --danger: #a34c56;
+      --shadow: 0 18px 45px rgba(64, 51, 34, 0.16);
+    }
+
+    html[data-look="paper"] body {
+      background:
+        linear-gradient(rgba(77, 62, 42, 0.027) 1px, transparent 1px),
+        #f1ede4;
+      background-size: 100% 24px;
+    }
+
+    html[data-look="paper"] .app {
+      gap: 8px;
+      padding: 12px 14px 10px;
+    }
+
+    html[data-look="paper"] .app::before {
+      display: none;
+    }
+
+    html[data-look="paper"] .mark {
+      width: 33px;
+      height: 36px;
+      border-color: rgba(var(--accent-rgb), 0.7);
+      border-radius: 50% 50% 45% 45%;
+      background: rgba(255, 255, 255, 0.28);
+      box-shadow: none;
+    }
+
+    html[data-look="paper"] h1 {
+      font-family: ui-serif, "New York", Georgia, serif;
+      font-size: 21px;
+      font-weight: 620;
+      letter-spacing: -0.55px;
+    }
+
+    html[data-look="paper"] .count {
+      color: var(--faint);
+      font-size: 9.5px;
+      font-weight: 560;
+    }
+
+    html[data-look="paper"] .icon-button {
+      width: 32px;
+      height: 32px;
+      border-color: var(--border);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.34);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="paper"] .input-wrap {
+      height: 34px;
+      padding: 0 2px;
+      border: 0;
+      border-bottom: 1px solid rgba(76, 65, 49, 0.28);
+      border-radius: 0;
+      background: transparent;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="paper"] .input-wrap input {
+      font-family: ui-serif, "New York", Georgia, serif;
+      font-size: 12px;
+    }
+
+    html[data-look="paper"] .filters {
+      gap: 17px;
+      padding: 0 2px 4px;
+    }
+
+    html[data-look="paper"] .chip {
+      min-height: 23px;
+      padding: 0;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: var(--faint);
+      font-size: 9.5px;
+      font-weight: 650;
+    }
+
+    html[data-look="paper"] .chip.active {
+      border-bottom-color: var(--accent);
+      background: transparent;
+      color: var(--accent);
+    }
+
+    html[data-look="paper"] .list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+      padding: 1px 2px 2px;
+      scrollbar-color: rgba(var(--accent-rgb), 0.35) rgba(82, 68, 49, 0.08);
+    }
+
+    html[data-look="paper"] .card {
+      grid-template-rows: auto auto;
+      gap: 8px;
+      height: 157px;
+      padding: 14px 13px 40px;
+      border-color: rgba(99, 83, 60, 0.14);
+      border-radius: 5px 14px 7px 12px;
+      background: #fffdf8;
+      box-shadow: 0 1px 0 rgba(59, 48, 31, 0.08), 0 5px 14px rgba(59, 48, 31, 0.06);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="paper"] .card:nth-child(4n + 2) {
+      background: #edf4ef;
+    }
+
+    html[data-look="paper"] .card:nth-child(4n + 3) {
+      background: #f5eee3;
+    }
+
+    html[data-look="paper"] .card:nth-child(4n) {
+      background: #edf0f4;
+    }
+
+    html[data-look="paper"] .card:hover {
+      border-color: rgba(var(--accent-rgb), 0.52);
+      background: #fffefb;
+      transform: translateY(-1px);
+    }
+
+    html[data-look="paper"] .card-top,
+    html[data-look="paper"] .title-area {
+      height: auto;
+      padding-right: 20px;
+    }
+
+    html[data-look="paper"] .snippet-title {
+      min-height: 0;
+      font-family: ui-serif, "New York", Georgia, serif;
+      font-size: 15px;
+      line-height: 1.12;
+      font-weight: 620;
+      letter-spacing: -0.25px;
+    }
+
+    html[data-look="paper"] .snippet-meta {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--faint);
+      font-size: 7.5px;
+      font-weight: 760;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    html[data-look="paper"] .title-area {
+      display: flex;
+      flex-direction: column-reverse;
+      justify-content: flex-end;
+    }
+
+    html[data-look="paper"] .snippet-body {
+      height: 45px;
+      margin: 0;
+      color: var(--muted);
+      font-family: ui-serif, "New York", Georgia, serif;
+      font-size: 10.5px;
+      line-height: 1.42;
+      -webkit-line-clamp: 3;
+    }
+
+    html[data-look="paper"] .card-actions {
+      top: auto;
+      right: 12px;
+      bottom: 10px;
+    }
+
+    html[data-look="paper"] .tile-footer {
+      right: auto;
+      left: 12px;
+      bottom: 10px;
+      opacity: 0.28;
+      transition: opacity 120ms ease;
+    }
+
+    html[data-look="paper"] .card:hover .tile-footer,
+    html[data-look="paper"] .card:focus-within .tile-footer {
+      opacity: 1;
+    }
+
+    html[data-look="paper"] .mini-button {
+      width: 20px;
+      height: 20px;
+      border-color: rgba(75, 66, 54, 0.14);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.42);
+      color: rgba(50, 46, 39, 0.56);
+    }
+
+    html[data-look="paper"] .footer button,
+    html[data-look="paper"] .primary-button,
+    html[data-look="paper"] .secondary-button,
+    html[data-look="paper"] .danger-button {
+      border-color: var(--border);
+      background: rgba(255, 255, 255, 0.45);
+      color: var(--muted);
+    }
+
+    html[data-look="paper"] .primary-button {
+      border-color: rgba(var(--accent-rgb), 0.48);
+      background: var(--accent);
+      color: #f9f8f3;
+    }
+
+    html[data-look="paper"] .danger-button {
+      border-color: rgba(163, 76, 86, 0.3);
+      background: rgba(163, 76, 86, 0.07);
+      color: #93444e;
+    }
+
+    html[data-look="paper"] input,
+    html[data-look="paper"] textarea,
+    html[data-look="paper"] select {
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--text);
+    }
+
+    html[data-look="paper"] .input-wrap input {
+      border: 0;
+      background: transparent;
+    }
+
+    html[data-look="paper"] .panel {
+      background:
+        linear-gradient(rgba(77, 62, 42, 0.027) 1px, transparent 1px),
+        rgba(241, 237, 228, 0.985);
+      background-size: 100% 24px;
+    }
+
+    html[data-look="paper"] .settings-section,
+    html[data-look="paper"] .settings-tabs,
+    html[data-look="paper"] .look-choice {
+      background: rgba(255, 255, 255, 0.42);
+    }
+
+    html[data-look="paper"] .look-preview {
+      border-color: rgba(75, 66, 54, 0.13);
+    }
+
+    html[data-look="paper"] .toast {
+      background: rgba(255, 253, 248, 0.97);
+    }
+
+    /* Utility Mono */
+    html[data-look="mono"] {
+      --panel: #111212;
+      --panel-2: #171918;
+      --border: rgba(227, 231, 221, 0.15);
+      --text: rgba(240, 242, 235, 0.94);
+      --muted: rgba(207, 211, 201, 0.52);
+      --faint: rgba(207, 211, 201, 0.32);
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    }
+
+    html[data-look="mono"] body {
+      background:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.012) 3px 4px),
+        #0b0c0c;
+    }
+
+    html[data-look="mono"] .app {
+      grid-template-columns: 86px 1fr;
+      grid-template-rows: 55px 49px 1fr 39px;
+      gap: 0;
+      padding: 0;
+    }
+
+    html[data-look="mono"] .app::before {
+      display: none;
+    }
+
+    html[data-look="mono"] .topbar {
+      grid-column: 1 / -1;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    html[data-look="mono"] .brand {
+      gap: 8px;
+    }
+
+    html[data-look="mono"] .mark {
+      width: 12px;
+      height: 18px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    html[data-look="mono"] .mark svg {
+      width: 12px;
+      height: 12px;
+    }
+
+    html[data-look="mono"] h1 {
+      color: var(--accent);
+      font-size: 10.5px;
+      font-weight: 760;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    html[data-look="mono"] .count {
+      margin: 0 0 0 7px;
+      color: var(--faint);
+      font-size: 8px;
+      font-weight: 500;
+    }
+
+    html[data-look="mono"] .brand > div:last-child {
+      display: flex;
+      align-items: center;
+    }
+
+    html[data-look="mono"] .icon-button {
+      width: 28px;
+      height: 28px;
+      border-radius: 0;
+      background: #141515;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="mono"] .searchbar {
+      grid-column: 1 / -1;
+      grid-template-columns: 1fr auto;
+      gap: 7px;
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    html[data-look="mono"] .input-wrap {
+      height: 32px;
+      border-radius: 0;
+      background: #111212;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="mono"] .input-wrap input {
+      font-size: 9.5px;
+    }
+
+    html[data-look="mono"] .filters {
+      grid-column: 1;
+      grid-row: 3;
+      flex-direction: column;
+      gap: 2px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 9px 7px;
+      border-right: 1px solid var(--border);
+    }
+
+    html[data-look="mono"] .chip {
+      flex: 0 0 auto;
+      min-height: 27px;
+      padding: 0 7px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--faint);
+      font-size: 8px;
+      font-weight: 620;
+      text-align: left;
+    }
+
+    html[data-look="mono"] .chip.active {
+      background: var(--accent);
+      color: #0b0c0c;
+    }
+
+    html[data-look="mono"] .content {
+      grid-column: 2;
+      grid-row: 3;
+    }
+
+    html[data-look="mono"] .list {
+      grid-template-columns: 1fr;
+      align-content: start;
+      gap: 0;
+      padding: 0;
+      counter-reset: drop-row;
+    }
+
+    html[data-look="mono"] .card {
+      counter-increment: drop-row;
+      grid-template-rows: auto auto;
+      gap: 6px;
+      height: 89px;
+      padding: 14px 72px 11px 43px;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="mono"] .card::before {
+      content: counter(drop-row, decimal-leading-zero);
+      position: absolute;
+      top: 15px;
+      left: 10px;
+      color: var(--faint);
+      font-size: 8px;
+    }
+
+    html[data-look="mono"] .card:hover {
+      background: rgba(255, 255, 255, 0.035);
+      box-shadow: inset 2px 0 var(--accent);
+    }
+
+    html[data-look="mono"] .card-top,
+    html[data-look="mono"] .title-area {
+      height: auto;
+      padding-right: 0;
+    }
+
+    html[data-look="mono"] .snippet-title {
+      display: block;
+      min-height: 0;
+      overflow: hidden;
+      font-size: 10px;
+      line-height: 1.2;
+      font-weight: 680;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    html[data-look="mono"] .snippet-meta {
+      display: block;
+      margin: 0 0 5px;
+      color: var(--faint);
+      font-size: 7px;
+      letter-spacing: 0.7px;
+      text-transform: uppercase;
+    }
+
+    html[data-look="mono"] .title-area {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+
+    html[data-look="mono"] .snippet-body {
+      display: block;
+      height: auto;
+      margin: 0;
+      overflow: hidden;
+      color: var(--muted);
+      font-size: 8px;
+      line-height: 1.25;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    html[data-look="mono"] .card-actions {
+      top: 12px;
+      right: 10px;
+    }
+
+    html[data-look="mono"] .tile-footer {
+      right: 10px;
+      bottom: 12px;
+      opacity: 0.24;
+      transition: opacity 120ms ease;
+    }
+
+    html[data-look="mono"] .card:hover .tile-footer,
+    html[data-look="mono"] .card:focus-within .tile-footer {
+      opacity: 1;
+    }
+
+    html[data-look="mono"] .mini-button {
+      width: 18px;
+      height: 18px;
+      border-radius: 0;
+      background: #141515;
+    }
+
+    html[data-look="mono"] .footer {
+      grid-column: 1 / -1;
+      grid-row: 4;
+      gap: 0;
+      padding: 5px 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    html[data-look="mono"] .footer button {
+      min-height: 27px;
+      border-radius: 0;
+      background: #111212;
+      font-size: 8px;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+    }
+
+    html[data-look="mono"] .panel {
+      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+      background:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.012) 3px 4px),
+        rgba(11, 12, 12, 0.99);
+    }
+
+    html[data-look="mono"] input,
+    html[data-look="mono"] textarea,
+    html[data-look="mono"] select,
+    html[data-look="mono"] .settings-section,
+    html[data-look="mono"] .settings-tabs,
+    html[data-look="mono"] .look-choice {
+      border-radius: 0;
+      background: #111212;
+    }
+
+    html[data-look="mono"] .primary-button,
+    html[data-look="mono"] .secondary-button,
+    html[data-look="mono"] .danger-button {
+      border-radius: 0;
+    }
+
+    html[data-look="mono"] .toast {
+      border-radius: 0;
+      background: #111212;
+    }
   </style>
 </head>
 <body>
@@ -634,33 +1631,69 @@
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
       </header>
+      <nav class="settings-tabs" role="tablist" aria-label="Settings sections">
+        <button class="settings-tab active" type="button" role="tab" data-settings-tab="appearance" aria-selected="true">Appearance</button>
+        <button class="settings-tab" type="button" role="tab" data-settings-tab="categories" aria-selected="false">Categories</button>
+        <button class="settings-tab" type="button" role="tab" data-settings-tab="library" aria-selected="false">Library</button>
+      </nav>
       <div class="manage-grid">
-        <section class="settings-section">
-          <p class="section-title">Vibe</p>
-          <div class="vibe-row">
-            <input id="vibePicker" type="color" aria-label="Vibe colour">
-            <input id="vibeHex" type="text" maxlength="7" aria-label="Vibe hex">
-            <button class="secondary-button" id="resetVibeButton" type="button">Reset</button>
-          </div>
-        </section>
+        <div class="settings-pane active" role="tabpanel" data-settings-pane="appearance">
+          <section class="settings-section">
+            <div class="look-copy">
+              <p class="section-title">Choose your shelf</p>
+              <span>Switch the layout without changing any saved drops.</span>
+            </div>
+            <div class="look-grid">
+              <button class="look-choice" type="button" data-look-value="original" aria-pressed="true">
+                <span class="look-preview look-preview-original" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Original</strong><small>Current card grid</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="native" aria-pressed="false">
+                <span class="look-preview look-preview-native" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Native List</strong><small>Compact and familiar</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="paper" aria-pressed="false">
+                <span class="look-preview look-preview-paper" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Paper Shelf</strong><small>Warm and personal</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="mono" aria-pressed="false">
+                <span class="look-preview look-preview-mono" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Utility Mono</strong><small>Fast and keyboard-led</small></span></span>
+              </button>
+            </div>
+            <p class="look-note">Original always remains available.</p>
+          </section>
 
-        <section class="settings-section">
-          <p class="section-title">Categories</p>
-          <div class="add-category-row">
-            <input id="newCategoryInput" type="text" maxlength="32" placeholder="New category">
-            <button class="primary-button" id="addCategoryButton" type="button">Add</button>
-          </div>
-          <div class="category-list" id="categoryList"></div>
-        </section>
+          <section class="settings-section">
+            <p class="section-title">Accent colour</p>
+            <div class="vibe-row">
+              <input id="vibePicker" type="color" aria-label="Vibe colour">
+              <input id="vibeHex" type="text" maxlength="7" aria-label="Vibe hex">
+              <button class="secondary-button" id="resetVibeButton" type="button">Reset</button>
+            </div>
+          </section>
+        </div>
 
-        <section class="settings-section">
-          <p class="section-title">Library</p>
-          <button class="primary-button" id="seedButton" type="button">Restore Starters</button>
-          <button class="secondary-button" id="copyAllButton" type="button">Copy All JSON</button>
-          <button class="danger-button" id="clearButton" type="button">Clear Library</button>
-        </section>
+        <div class="settings-pane" role="tabpanel" data-settings-pane="categories" hidden>
+          <section class="settings-section">
+            <p class="section-title">Categories</p>
+            <div class="add-category-row">
+              <input id="newCategoryInput" type="text" maxlength="32" placeholder="New category">
+              <button class="primary-button" id="addCategoryButton" type="button">Add</button>
+            </div>
+            <div class="category-list" id="categoryList"></div>
+          </section>
+        </div>
+
+        <div class="settings-pane" role="tabpanel" data-settings-pane="library" hidden>
+          <section class="settings-section">
+            <p class="section-title">Library</p>
+            <button class="primary-button" id="seedButton" type="button">Restore Starters</button>
+            <button class="secondary-button" id="copyAllButton" type="button">Copy All JSON</button>
+            <button class="danger-button" id="clearButton" type="button">Clear Library</button>
+          </section>
+        </div>
       </div>
-      <div></div>
     </section>
 
     <div class="toast-stack" id="toastStack" aria-live="polite"></div>
@@ -672,7 +1705,10 @@
       const STORAGE_KEY = "dewdrops.snippets.v1";
       const CATEGORY_KEY = "dewdrops.categories.v1";
       const VIBE_KEY = "dewdrops.vibe.v1";
+      const LOOK_KEY = window.dewdropsAppearance.key;
+      const LOOKS = window.dewdropsAppearance.looks;
       const DEFAULT_VIBE = "#9bd8c5";
+      const DEFAULT_LOOK = window.dewdropsAppearance.defaultLook;
       const MAX_IMPORT_BYTES = 1024 * 1024;
 
       const starters = [
@@ -723,6 +1759,9 @@
         bodyInput: document.getElementById("bodyInput"),
         managePanel: document.getElementById("managePanel"),
         closeManage: document.getElementById("closeManage"),
+        settingsTabs: Array.from(document.querySelectorAll("[data-settings-tab]")),
+        settingsPanes: Array.from(document.querySelectorAll("[data-settings-pane]")),
+        lookChoices: Array.from(document.querySelectorAll("[data-look-value]")),
         vibePicker: document.getElementById("vibePicker"),
         vibeHex: document.getElementById("vibeHex"),
         resetVibeButton: document.getElementById("resetVibeButton"),
@@ -738,11 +1777,14 @@
       let snippets = loadSnippets();
       let customCategories = loadCategories();
       let vibeColor = loadVibe();
+      let look = loadLook();
       let activeFilter = "All";
+      let activeSettingsTab = "appearance";
       let editingId = null;
       let clearConfirmTimer = null;
       let importConfirmTimer = null;
       applyVibe(vibeColor);
+      applyLook(look);
 
       function makeSnippet(input) {
         const now = new Date().toISOString();
@@ -790,6 +1832,29 @@
         localStorage.setItem(VIBE_KEY, vibeColor);
         applyVibe(vibeColor);
         renderVibeControls();
+      }
+
+      function loadLook() {
+        try {
+          const saved = localStorage.getItem(LOOK_KEY);
+          return LOOKS.includes(saved) ? saved : DEFAULT_LOOK;
+        } catch {
+          return DEFAULT_LOOK;
+        }
+      }
+
+      function saveLook(next) {
+        if (!LOOKS.includes(next)) return;
+        const changed = next !== look;
+        look = next;
+        localStorage.setItem(LOOK_KEY, look);
+        applyLook(look);
+        renderLookControls();
+        if (changed) showToast("Look changed");
+      }
+
+      function applyLook(next) {
+        document.documentElement.dataset.look = LOOKS.includes(next) ? next : DEFAULT_LOOK;
       }
 
       function applyVibe(hex) {
@@ -963,13 +2028,40 @@
       }
 
       function renderSettings() {
+        renderLookControls();
         renderVibeControls();
         renderCategoryManager();
+      }
+
+      function renderLookControls() {
+        for (const choice of elements.lookChoices) {
+          choice.setAttribute("aria-pressed", String(choice.dataset.lookValue === look));
+        }
       }
 
       function renderVibeControls() {
         elements.vibePicker.value = vibeColor;
         elements.vibeHex.value = vibeColor.toUpperCase();
+      }
+
+      function selectSettingsTab(next) {
+        if (!elements.settingsTabs.some((tab) => tab.dataset.settingsTab === next)) return;
+        activeSettingsTab = next;
+        for (const tab of elements.settingsTabs) {
+          const active = tab.dataset.settingsTab === activeSettingsTab;
+          tab.classList.toggle("active", active);
+          tab.setAttribute("aria-selected", String(active));
+        }
+        for (const pane of elements.settingsPanes) {
+          const active = pane.dataset.settingsPane === activeSettingsTab;
+          pane.classList.toggle("active", active);
+          pane.hidden = !active;
+        }
+      }
+
+      function openManage() {
+        selectSettingsTab("appearance");
+        elements.managePanel.classList.add("active");
       }
 
       function renderCategoryManager() {
@@ -1295,7 +2387,7 @@
 
       elements.searchInput.addEventListener("input", render);
       elements.newButton.addEventListener("click", () => openEditor());
-      elements.manageButton.addEventListener("click", () => elements.managePanel.classList.add("active"));
+      elements.manageButton.addEventListener("click", openManage);
       elements.exportButton.addEventListener("click", exportJson);
       elements.importButton.addEventListener("click", requestImport);
       elements.importFile.addEventListener("change", () => {
@@ -1306,6 +2398,8 @@
       elements.cancelEditor.addEventListener("click", closeEditor);
       elements.snippetForm.addEventListener("submit", saveEditor);
       elements.closeManage.addEventListener("click", () => elements.managePanel.classList.remove("active"));
+      elements.settingsTabs.forEach((tab) => tab.addEventListener("click", () => selectSettingsTab(tab.dataset.settingsTab)));
+      elements.lookChoices.forEach((choice) => choice.addEventListener("click", () => saveLook(choice.dataset.lookValue)));
       elements.vibePicker.addEventListener("input", () => saveVibe(elements.vibePicker.value));
       elements.vibeHex.addEventListener("change", () => {
         const next = normalizeHex(elements.vibeHex.value);
@@ -1328,6 +2422,7 @@
       elements.copyAllButton.addEventListener("click", () => copySnippet(JSON.stringify(snippets, null, 2)));
       elements.clearButton.addEventListener("click", clearLibrary);
 
+      selectSettingsTab(activeSettingsTab);
       render();
     })();
   </script>
