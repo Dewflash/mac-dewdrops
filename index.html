@@ -8,13 +8,15 @@
     (() => {
       const appearance = Object.freeze({
         key: "dewdrops.look.v1",
-        looks: Object.freeze(["original", "native", "paper", "mono"]),
+        looks: Object.freeze(["original", "native", "paper", "slate", "pinboard", "wash"]),
         defaultLook: "original"
       });
       window.dewdropsAppearance = appearance;
       try {
         const saved = localStorage.getItem(appearance.key);
-        document.documentElement.dataset.look = appearance.looks.includes(saved) ? saved : appearance.defaultLook;
+        const valid = appearance.looks.includes(saved);
+        document.documentElement.dataset.look = valid ? saved : appearance.defaultLook;
+        if (saved !== null && !valid) localStorage.setItem(appearance.key, appearance.defaultLook);
       } catch {
         document.documentElement.dataset.look = appearance.defaultLook;
       }
@@ -657,7 +659,7 @@
 
     .look-preview {
       position: relative;
-      height: 70px;
+      height: 52px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 7px;
@@ -667,10 +669,10 @@
     .look-preview::before {
       content: "";
       position: absolute;
-      top: 8px;
+      top: 7px;
       left: 8px;
       right: 8px;
-      height: 9px;
+      height: 8px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.15);
     }
@@ -679,17 +681,17 @@
       position: absolute;
       left: 8px;
       right: 8px;
-      height: 12px;
+      height: 9px;
       border-radius: 3px;
       background: rgba(255, 255, 255, 0.1);
     }
 
     .look-preview i:nth-child(1) {
-      top: 27px;
+      top: 22px;
     }
 
     .look-preview i:nth-child(2) {
-      top: 45px;
+      top: 36px;
     }
 
     .look-preview-original {
@@ -701,8 +703,8 @@
     .look-preview-original i {
       right: auto;
       width: 34px;
-      height: 31px;
-      top: 28px;
+      height: 22px;
+      top: 22px;
       border: 1px solid rgba(255, 255, 255, 0.11);
       background: rgba(255, 255, 255, 0.06);
     }
@@ -720,7 +722,7 @@
     }
 
     .look-preview-paper {
-      background: #eee9df;
+      background: #d6d2c8;
     }
 
     .look-preview-paper::before {
@@ -730,43 +732,65 @@
     .look-preview-paper i {
       right: auto;
       width: 49px;
-      height: 35px;
-      top: 26px;
-      background: #fffdf8;
+      height: 23px;
+      top: 21px;
+      background: #e4e0d6;
       box-shadow: 0 2px 4px rgba(54, 44, 30, 0.08);
     }
 
     .look-preview-paper i:nth-child(2) {
       left: 64px;
-      background: #e5efe8;
+      background: #d9e1dc;
     }
 
-    .look-preview-mono {
-      border-radius: 0;
-      background: #090a0a;
+    .look-preview-slate {
+      background: #24262c;
     }
 
-    .look-preview-mono::before {
-      border: 1px solid #3a3d3b;
-      border-radius: 0;
-      background: transparent;
+    .look-preview-slate::before {
+      background: #393c44;
     }
 
-    .look-preview-mono i {
-      left: 38px;
-      border-radius: 0;
-      background: #1b1d1c;
+    .look-preview-slate i {
+      border-left: 2px solid var(--accent);
+      background: #30333a;
     }
 
-    .look-preview-mono::after {
-      content: "";
-      position: absolute;
-      top: 26px;
-      bottom: 8px;
-      left: 8px;
-      width: 23px;
-      border-right: 1px solid #323432;
-      background: linear-gradient(var(--accent) 0 10px, transparent 10px);
+    .look-preview-pinboard {
+      background: #20302e;
+    }
+
+    .look-preview-pinboard::before {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .look-preview-pinboard i {
+      right: auto;
+      width: 49px;
+      height: 23px;
+      top: 21px;
+      background: #34443f;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+    }
+
+    .look-preview-pinboard i:nth-child(2) {
+      left: 64px;
+      background: #433a37;
+    }
+
+    .look-preview-wash {
+      background:
+        linear-gradient(rgba(var(--accent-rgb), 0.24), rgba(var(--accent-rgb), 0.08)),
+        #1a1d25;
+    }
+
+    .look-preview-wash::before {
+      background: rgba(var(--accent-rgb), 0.24);
+    }
+
+    .look-preview-wash i {
+      border: 1px solid rgba(var(--accent-rgb), 0.28);
+      background: rgba(var(--accent-rgb), 0.12);
     }
 
     .look-label {
@@ -1018,8 +1042,8 @@
     /* Paper Shelf */
     html[data-look="paper"] {
       color-scheme: light;
-      --panel: rgba(255, 253, 248, 0.9);
-      --panel-2: rgba(255, 255, 255, 0.68);
+      --panel: rgba(218, 215, 206, 0.94);
+      --panel-2: rgba(255, 255, 255, 0.3);
       --border: rgba(79, 66, 47, 0.18);
       --text: rgba(42, 40, 33, 0.96);
       --muted: rgba(75, 69, 60, 0.69);
@@ -1031,7 +1055,7 @@
     html[data-look="paper"] body {
       background:
         linear-gradient(rgba(77, 62, 42, 0.027) 1px, transparent 1px),
-        #f1ede4;
+        #d6d2c8;
       background-size: 100% 24px;
     }
 
@@ -1049,7 +1073,7 @@
       height: 36px;
       border-color: rgba(var(--accent-rgb), 0.7);
       border-radius: 50% 50% 45% 45%;
-      background: rgba(255, 255, 255, 0.28);
+      background: rgba(255, 255, 255, 0.18);
       box-shadow: none;
     }
 
@@ -1071,7 +1095,7 @@
       height: 32px;
       border-color: var(--border);
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.34);
+      background: rgba(255, 255, 255, 0.2);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
@@ -1129,27 +1153,27 @@
       padding: 14px 13px 40px;
       border-color: rgba(99, 83, 60, 0.14);
       border-radius: 5px 14px 7px 12px;
-      background: #fffdf8;
+      background: #e4e0d6;
       box-shadow: 0 1px 0 rgba(59, 48, 31, 0.08), 0 5px 14px rgba(59, 48, 31, 0.06);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
 
     html[data-look="paper"] .card:nth-child(4n + 2) {
-      background: #edf4ef;
+      background: #d9e1dc;
     }
 
     html[data-look="paper"] .card:nth-child(4n + 3) {
-      background: #f5eee3;
+      background: #e4d8cc;
     }
 
     html[data-look="paper"] .card:nth-child(4n) {
-      background: #edf0f4;
+      background: #d8dce2;
     }
 
     html[data-look="paper"] .card:hover {
       border-color: rgba(var(--accent-rgb), 0.52);
-      background: #fffefb;
+      background: #ebe7de;
       transform: translateY(-1px);
     }
 
@@ -1218,7 +1242,7 @@
       height: 20px;
       border-color: rgba(75, 66, 54, 0.14);
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.42);
+      background: rgba(255, 255, 255, 0.24);
       color: rgba(50, 46, 39, 0.56);
     }
 
@@ -1227,14 +1251,14 @@
     html[data-look="paper"] .secondary-button,
     html[data-look="paper"] .danger-button {
       border-color: var(--border);
-      background: rgba(255, 255, 255, 0.45);
+      background: rgba(255, 255, 255, 0.26);
       color: var(--muted);
     }
 
     html[data-look="paper"] .primary-button {
       border-color: rgba(var(--accent-rgb), 0.48);
       background: var(--accent);
-      color: #f9f8f3;
+      color: #1f302c;
     }
 
     html[data-look="paper"] .danger-button {
@@ -1246,7 +1270,7 @@
     html[data-look="paper"] input,
     html[data-look="paper"] textarea,
     html[data-look="paper"] select {
-      background: rgba(255, 255, 255, 0.58);
+      background: rgba(255, 255, 255, 0.32);
       color: var(--text);
     }
 
@@ -1258,14 +1282,14 @@
     html[data-look="paper"] .panel {
       background:
         linear-gradient(rgba(77, 62, 42, 0.027) 1px, transparent 1px),
-        rgba(241, 237, 228, 0.985);
+        rgba(214, 210, 200, 0.99);
       background-size: 100% 24px;
     }
 
     html[data-look="paper"] .settings-section,
     html[data-look="paper"] .settings-tabs,
     html[data-look="paper"] .look-choice {
-      background: rgba(255, 255, 255, 0.42);
+      background: rgba(255, 255, 255, 0.24);
     }
 
     html[data-look="paper"] .look-preview {
@@ -1273,291 +1297,348 @@
     }
 
     html[data-look="paper"] .toast {
-      background: rgba(255, 253, 248, 0.97);
+      background: rgba(229, 225, 216, 0.98);
     }
 
-    /* Utility Mono */
-    html[data-look="mono"] {
-      --panel: #111212;
-      --panel-2: #171918;
-      --border: rgba(227, 231, 221, 0.15);
-      --text: rgba(240, 242, 235, 0.94);
-      --muted: rgba(207, 211, 201, 0.52);
-      --faint: rgba(207, 211, 201, 0.32);
-      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    /* Soft Slate, Pinboard, and Colour Wash share a roomier two-column shelf. */
+    html[data-look="slate"] {
+      --panel: #292b31;
+      --panel-2: #30333a;
+      --border: rgba(255, 255, 255, 0.105);
+      --text: rgba(247, 248, 250, 0.94);
+      --muted: rgba(224, 227, 233, 0.58);
+      --faint: rgba(224, 227, 233, 0.36);
     }
 
-    html[data-look="mono"] body {
+    html[data-look="pinboard"] {
+      --panel: #283633;
+      --panel-2: #30403c;
+      --border: rgba(238, 239, 227, 0.13);
+      --text: rgba(249, 247, 238, 0.94);
+      --muted: rgba(235, 231, 214, 0.61);
+      --faint: rgba(235, 231, 214, 0.38);
+    }
+
+    html[data-look="wash"] {
+      --panel: rgba(29, 33, 42, 0.92);
+      --panel-2: rgba(var(--accent-rgb), 0.11);
+      --border: rgba(var(--accent-rgb), 0.22);
+      --text: rgba(250, 251, 252, 0.94);
+      --muted: rgba(237, 240, 244, 0.6);
+      --faint: rgba(237, 240, 244, 0.38);
+    }
+
+    html[data-look="slate"] body {
+      background: #22242a;
+    }
+
+    html[data-look="pinboard"] body {
       background:
-        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.012) 3px 4px),
-        #0b0c0c;
+        linear-gradient(180deg, rgba(var(--accent-rgb), 0.07), transparent 38%),
+        #1d2928;
     }
 
-    html[data-look="mono"] .app {
-      grid-template-columns: 86px 1fr;
-      grid-template-rows: 55px 49px 1fr 39px;
-      gap: 0;
-      padding: 0;
+    html[data-look="wash"] body {
+      background:
+        linear-gradient(rgba(var(--accent-rgb), 0.17), rgba(var(--accent-rgb), 0.055)),
+        #191c23;
     }
 
-    html[data-look="mono"] .app::before {
+    html[data-look="slate"] .app,
+    html[data-look="pinboard"] .app,
+    html[data-look="wash"] .app {
+      gap: 8px;
+      padding: 12px;
+    }
+
+    html[data-look="slate"] .app::before {
       display: none;
     }
 
-    html[data-look="mono"] .topbar {
-      grid-column: 1 / -1;
-      padding: 0 14px;
-      border-bottom: 1px solid var(--border);
+    html[data-look="pinboard"] .app::before,
+    html[data-look="wash"] .app::before {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 30%);
     }
 
-    html[data-look="mono"] .brand {
-      gap: 8px;
-    }
-
-    html[data-look="mono"] .mark {
-      width: 12px;
-      height: 18px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
+    html[data-look="slate"] .mark,
+    html[data-look="pinboard"] .mark,
+    html[data-look="wash"] .mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(var(--accent-rgb), 0.1);
       box-shadow: none;
     }
 
-    html[data-look="mono"] .mark svg {
-      width: 12px;
-      height: 12px;
+    html[data-look="pinboard"] .mark {
+      border-radius: 50% 50% 44% 44%;
     }
 
-    html[data-look="mono"] h1 {
-      color: var(--accent);
-      font-size: 10.5px;
-      font-weight: 760;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+    html[data-look="slate"] h1,
+    html[data-look="pinboard"] h1,
+    html[data-look="wash"] h1 {
+      font-size: 18px;
+      font-weight: 690;
+      letter-spacing: -0.3px;
     }
 
-    html[data-look="mono"] .count {
-      margin: 0 0 0 7px;
-      color: var(--faint);
-      font-size: 8px;
-      font-weight: 500;
-    }
-
-    html[data-look="mono"] .brand > div:last-child {
-      display: flex;
-      align-items: center;
-    }
-
-    html[data-look="mono"] .icon-button {
-      width: 28px;
-      height: 28px;
-      border-radius: 0;
-      background: #141515;
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
-
-    html[data-look="mono"] .searchbar {
-      grid-column: 1 / -1;
-      grid-template-columns: 1fr auto;
-      gap: 7px;
-      padding: 8px 14px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    html[data-look="mono"] .input-wrap {
-      height: 32px;
-      border-radius: 0;
-      background: #111212;
-      -webkit-backdrop-filter: none;
-      backdrop-filter: none;
-    }
-
-    html[data-look="mono"] .input-wrap input {
-      font-size: 9.5px;
-    }
-
-    html[data-look="mono"] .filters {
-      grid-column: 1;
-      grid-row: 3;
-      flex-direction: column;
-      gap: 2px;
-      overflow-x: hidden;
-      overflow-y: auto;
-      padding: 9px 7px;
-      border-right: 1px solid var(--border);
-    }
-
-    html[data-look="mono"] .chip {
-      flex: 0 0 auto;
-      min-height: 27px;
-      padding: 0 7px;
-      border: 0;
-      border-radius: 0;
-      background: transparent;
-      color: var(--faint);
-      font-size: 8px;
+    html[data-look="pinboard"] h1 {
+      font-family: ui-serif, "New York", Georgia, serif;
       font-weight: 620;
-      text-align: left;
     }
 
-    html[data-look="mono"] .chip.active {
-      background: var(--accent);
-      color: #0b0c0c;
+    html[data-look="slate"] .count,
+    html[data-look="pinboard"] .count,
+    html[data-look="wash"] .count {
+      margin-top: 2px;
+      font-size: 9.5px;
+      font-weight: 560;
     }
 
-    html[data-look="mono"] .content {
-      grid-column: 2;
-      grid-row: 3;
-    }
-
-    html[data-look="mono"] .list {
-      grid-template-columns: 1fr;
-      align-content: start;
-      gap: 0;
-      padding: 0;
-      counter-reset: drop-row;
-    }
-
-    html[data-look="mono"] .card {
-      counter-increment: drop-row;
-      grid-template-rows: auto auto;
-      gap: 6px;
-      height: 89px;
-      padding: 14px 72px 11px 43px;
-      border: 0;
-      border-bottom: 1px solid var(--border);
-      border-radius: 0;
-      background: transparent;
-      box-shadow: none;
+    html[data-look="slate"] .icon-button,
+    html[data-look="pinboard"] .icon-button,
+    html[data-look="wash"] .icon-button {
+      width: 33px;
+      height: 33px;
+      border-radius: 10px;
+      background: var(--panel-2);
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
     }
 
-    html[data-look="mono"] .card::before {
-      content: counter(drop-row, decimal-leading-zero);
-      position: absolute;
-      top: 15px;
-      left: 10px;
-      color: var(--faint);
-      font-size: 8px;
+    html[data-look="slate"] .input-wrap,
+    html[data-look="pinboard"] .input-wrap,
+    html[data-look="wash"] .input-wrap {
+      height: 35px;
+      border-radius: 10px;
+      background: var(--panel-2);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
     }
 
-    html[data-look="mono"] .card:hover {
-      background: rgba(255, 255, 255, 0.035);
-      box-shadow: inset 2px 0 var(--accent);
+    html[data-look="slate"] .filters,
+    html[data-look="pinboard"] .filters,
+    html[data-look="wash"] .filters {
+      gap: 6px;
+      padding-bottom: 1px;
     }
 
-    html[data-look="mono"] .card-top,
-    html[data-look="mono"] .title-area {
+    html[data-look="slate"] .chip,
+    html[data-look="pinboard"] .chip,
+    html[data-look="wash"] .chip {
+      min-height: 25px;
+      padding: 0 9px;
+      border-radius: 8px;
+      background: var(--panel-2);
+      font-size: 9.5px;
+      font-weight: 660;
+    }
+
+    html[data-look="slate"] .chip.active,
+    html[data-look="pinboard"] .chip.active,
+    html[data-look="wash"] .chip.active {
+      border-color: rgba(var(--accent-rgb), 0.48);
+      background: rgba(var(--accent-rgb), 0.14);
+      color: var(--accent);
+    }
+
+    html[data-look="slate"] .list,
+    html[data-look="pinboard"] .list,
+    html[data-look="wash"] .list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      padding: 1px;
+    }
+
+    html[data-look="slate"] .card,
+    html[data-look="pinboard"] .card,
+    html[data-look="wash"] .card {
+      grid-template-rows: auto auto;
+      gap: 7px;
+      height: 154px;
+      padding: 13px 12px 39px;
+      border-radius: 13px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.11);
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    html[data-look="slate"] .card {
+      border-color: rgba(255, 255, 255, 0.095);
+      background: #2c2f36;
+    }
+
+    html[data-look="slate"] .card:nth-child(2n) {
+      background: #30323a;
+    }
+
+    html[data-look="pinboard"] .card {
+      border-color: rgba(239, 232, 210, 0.12);
+      background: #2a3935;
+      transform: rotate(-0.25deg);
+    }
+
+    html[data-look="pinboard"] .card:nth-child(4n + 2) {
+      background: #35363e;
+      transform: rotate(0.3deg);
+    }
+
+    html[data-look="pinboard"] .card:nth-child(4n + 3) {
+      background: #3a322e;
+      transform: rotate(0.18deg);
+    }
+
+    html[data-look="pinboard"] .card:nth-child(4n) {
+      background: #293640;
+      transform: rotate(-0.2deg);
+    }
+
+    html[data-look="wash"] .card {
+      border-color: rgba(var(--accent-rgb), 0.21);
+      background: rgba(var(--accent-rgb), 0.085);
+    }
+
+    html[data-look="wash"] .card:nth-child(2n) {
+      background: rgba(var(--accent-rgb), 0.13);
+    }
+
+    html[data-look="slate"] .card:hover,
+    html[data-look="pinboard"] .card:hover,
+    html[data-look="wash"] .card:hover {
+      border-color: rgba(var(--accent-rgb), 0.5);
+      background-color: rgba(var(--accent-rgb), 0.12);
+      transform: translateY(-1px);
+    }
+
+    html[data-look="slate"] .card-top,
+    html[data-look="slate"] .title-area,
+    html[data-look="pinboard"] .card-top,
+    html[data-look="pinboard"] .title-area,
+    html[data-look="wash"] .card-top,
+    html[data-look="wash"] .title-area {
       height: auto;
-      padding-right: 0;
+      padding-right: 20px;
     }
 
-    html[data-look="mono"] .snippet-title {
-      display: block;
+    html[data-look="slate"] .snippet-title,
+    html[data-look="pinboard"] .snippet-title,
+    html[data-look="wash"] .snippet-title {
       min-height: 0;
-      overflow: hidden;
-      font-size: 10px;
-      line-height: 1.2;
-      font-weight: 680;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 13.5px;
+      line-height: 1.16;
+      font-weight: 690;
+      letter-spacing: -0.2px;
     }
 
-    html[data-look="mono"] .snippet-meta {
+    html[data-look="pinboard"] .snippet-title {
+      font-family: ui-serif, "New York", Georgia, serif;
+      font-size: 14.5px;
+      font-weight: 620;
+    }
+
+    html[data-look="slate"] .snippet-meta,
+    html[data-look="pinboard"] .snippet-meta,
+    html[data-look="wash"] .snippet-meta {
       display: block;
-      margin: 0 0 5px;
+      margin: 0 0 6px;
       color: var(--faint);
-      font-size: 7px;
-      letter-spacing: 0.7px;
+      font-size: 7.5px;
+      font-weight: 760;
+      letter-spacing: 0.65px;
       text-transform: uppercase;
     }
 
-    html[data-look="mono"] .title-area {
+    html[data-look="slate"] .title-area,
+    html[data-look="pinboard"] .title-area,
+    html[data-look="wash"] .title-area {
       display: flex;
       flex-direction: column-reverse;
     }
 
-    html[data-look="mono"] .snippet-body {
-      display: block;
-      height: auto;
+    html[data-look="slate"] .snippet-body,
+    html[data-look="pinboard"] .snippet-body,
+    html[data-look="wash"] .snippet-body {
+      height: 43px;
       margin: 0;
-      overflow: hidden;
       color: var(--muted);
-      font-size: 8px;
-      line-height: 1.25;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 10.5px;
+      line-height: 1.38;
+      -webkit-line-clamp: 3;
     }
 
-    html[data-look="mono"] .card-actions {
-      top: 12px;
-      right: 10px;
+    html[data-look="pinboard"] .snippet-body {
+      font-family: ui-serif, "New York", Georgia, serif;
     }
 
-    html[data-look="mono"] .tile-footer {
-      right: 10px;
-      bottom: 12px;
-      opacity: 0.24;
+    html[data-look="slate"] .card-actions,
+    html[data-look="pinboard"] .card-actions,
+    html[data-look="wash"] .card-actions {
+      top: auto;
+      right: 11px;
+      bottom: 10px;
+    }
+
+    html[data-look="slate"] .tile-footer,
+    html[data-look="pinboard"] .tile-footer,
+    html[data-look="wash"] .tile-footer {
+      right: auto;
+      left: 11px;
+      bottom: 10px;
+      opacity: 0.38;
       transition: opacity 120ms ease;
     }
 
-    html[data-look="mono"] .card:hover .tile-footer,
-    html[data-look="mono"] .card:focus-within .tile-footer {
+    html[data-look="slate"] .card:hover .tile-footer,
+    html[data-look="slate"] .card:focus-within .tile-footer,
+    html[data-look="pinboard"] .card:hover .tile-footer,
+    html[data-look="pinboard"] .card:focus-within .tile-footer,
+    html[data-look="wash"] .card:hover .tile-footer,
+    html[data-look="wash"] .card:focus-within .tile-footer {
       opacity: 1;
     }
 
-    html[data-look="mono"] .mini-button {
-      width: 18px;
-      height: 18px;
-      border-radius: 0;
-      background: #141515;
+    html[data-look="slate"] .mini-button,
+    html[data-look="pinboard"] .mini-button,
+    html[data-look="wash"] .mini-button {
+      width: 20px;
+      height: 20px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.055);
     }
 
-    html[data-look="mono"] .footer {
-      grid-column: 1 / -1;
-      grid-row: 4;
-      gap: 0;
-      padding: 5px 14px;
-      border-top: 1px solid var(--border);
+    html[data-look="slate"] .footer button,
+    html[data-look="pinboard"] .footer button,
+    html[data-look="wash"] .footer button {
+      min-height: 31px;
+      border-radius: 9px;
+      background: var(--panel-2);
+      font-size: 10px;
     }
 
-    html[data-look="mono"] .footer button {
-      min-height: 27px;
-      border-radius: 0;
-      background: #111212;
-      font-size: 8px;
-      letter-spacing: 0.45px;
-      text-transform: uppercase;
+    html[data-look="slate"] .panel {
+      background: rgba(34, 36, 42, 0.99);
     }
 
-    html[data-look="mono"] .panel {
-      font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    html[data-look="pinboard"] .panel {
+      background: rgba(29, 41, 40, 0.99);
+    }
+
+    html[data-look="wash"] .panel {
       background:
-        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255, 255, 255, 0.012) 3px 4px),
-        rgba(11, 12, 12, 0.99);
+        linear-gradient(rgba(var(--accent-rgb), 0.14), rgba(var(--accent-rgb), 0.04)),
+        rgba(25, 28, 35, 0.99);
     }
 
-    html[data-look="mono"] input,
-    html[data-look="mono"] textarea,
-    html[data-look="mono"] select,
-    html[data-look="mono"] .settings-section,
-    html[data-look="mono"] .settings-tabs,
-    html[data-look="mono"] .look-choice {
-      border-radius: 0;
-      background: #111212;
-    }
-
-    html[data-look="mono"] .primary-button,
-    html[data-look="mono"] .secondary-button,
-    html[data-look="mono"] .danger-button {
-      border-radius: 0;
-    }
-
-    html[data-look="mono"] .toast {
-      border-radius: 0;
-      background: #111212;
+    html[data-look="slate"] .settings-section,
+    html[data-look="slate"] .settings-tabs,
+    html[data-look="slate"] .look-choice,
+    html[data-look="pinboard"] .settings-section,
+    html[data-look="pinboard"] .settings-tabs,
+    html[data-look="pinboard"] .look-choice,
+    html[data-look="wash"] .settings-section,
+    html[data-look="wash"] .settings-tabs,
+    html[data-look="wash"] .look-choice {
+      background: var(--panel-2);
     }
   </style>
 </head>
@@ -1654,11 +1735,19 @@
               </button>
               <button class="look-choice" type="button" data-look-value="paper" aria-pressed="false">
                 <span class="look-preview look-preview-paper" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Paper Shelf</strong><small>Warm and personal</small></span></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Paper Shelf</strong><small>Muted parchment</small></span></span>
               </button>
-              <button class="look-choice" type="button" data-look-value="mono" aria-pressed="false">
-                <span class="look-preview look-preview-mono" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Utility Mono</strong><small>Fast and keyboard-led</small></span></span>
+              <button class="look-choice" type="button" data-look-value="slate" aria-pressed="false">
+                <span class="look-preview look-preview-slate" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Soft Slate</strong><small>Calm and low-contrast</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="pinboard" aria-pressed="false">
+                <span class="look-preview look-preview-pinboard" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Pinboard</strong><small>Tactile dark notes</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="wash" aria-pressed="false">
+                <span class="look-preview look-preview-wash" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Colour Wash</strong><small>Built around your accent</small></span></span>
               </button>
             </div>
             <p class="look-note">Original always remains available.</p>

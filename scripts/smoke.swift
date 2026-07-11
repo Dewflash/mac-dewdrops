@@ -130,12 +130,21 @@ expect("SMOKE-STORAGE", jsString("""
 (() => { try { localStorage.setItem('smoke.probe', '1'); const v = localStorage.getItem('smoke.probe'); localStorage.removeItem('smoke.probe'); return 'RW:' + v; } catch (e) { return 'ERR:' + e.name; } })()
 """), "RW:1")
 
-// SMOKE-LOOKS: all four looks are available in Settings, the selected look
+// SMOKE-LOOKS: all six looks are available in Settings, the selected look
 // persists independently, and switching it never writes the snippet library.
+_ = js("localStorage.setItem('dewdrops.look.v1', 'mono'); true")
+bridge.loaded = false
+webView.reload()
+guard spin(seconds: 15, until: { bridge.loaded }) else {
+    fail("SMOKE-LOOKS: removed-look migration reload never finished", exitCode: 2)
+}
+expect("SMOKE-LOOKS removed mono", jsString("""
+document.documentElement.dataset.look + ':' + localStorage.getItem('dewdrops.look.v1')
+"""), "original:original")
 expect("SMOKE-LOOKS default", jsString("document.documentElement.dataset.look"), "original")
 expect("SMOKE-LOOKS choices", jsString("""
 [...document.querySelectorAll('[data-look-value]')].map((button) => button.dataset.lookValue).join(',')
-"""), "original,native,paper,mono")
+"""), "original,native,paper,slate,pinboard,wash")
 expect("SMOKE-LOOKS panel", jsString("""
 (() => {
   document.getElementById('manageButton').click();
@@ -158,14 +167,14 @@ expect("SMOKE-LOOKS tabs", jsString("""
 expect("SMOKE-LOOKS cycle", jsString("""
 (() => {
   const states = [];
-  for (const name of ['original', 'native', 'paper', 'mono']) {
+  for (const name of ['original', 'native', 'paper', 'slate', 'pinboard', 'wash']) {
     const button = document.querySelector('[data-look-value="' + name + '"]');
     button.click();
     states.push(document.documentElement.dataset.look + ':' + button.getAttribute('aria-pressed'));
   }
   return states.join('|');
 })()
-"""), "original:true|native:true|paper:true|mono:true")
+"""), "original:true|native:true|paper:true|slate:true|pinboard:true|wash:true")
 expect("SMOKE-LOOKS select", jsString("""
 (() => {
   document.querySelector('[data-look-value="native"]').click();
