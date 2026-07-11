@@ -180,17 +180,16 @@ guard spin(seconds: 15, until: { bridge.loaded }) else {
 }
 expect("SMOKE-PERSIST", countLabel(), "5 drops")
 
-// SMOKE-EXPORT: the Export button hands the full library across the bridge.
-// At HEAD the page copies the JSON (type:"copy"). PLAN-export-backup.md changes
-// this assertion — see that plan for the exact replacement.
+// SMOKE-EXPORT: the Export button hands the full library across the bridge as
+// {type:"export", json:...} for the native save panel (PLAN-export-backup).
 let exportBefore = bridge.messages.count
 _ = js("document.getElementById('exportButton').click(); true")
 guard spin(seconds: 5, until: { bridge.messages.count > exportBefore }) else {
     fail("SMOKE-EXPORT: no bridge message after Export click")
 }
 let exportMessage = bridge.messages.last!
-expect("SMOKE-EXPORT type", exportMessage["type"] as? String ?? "<missing>", "copy")
-guard let exportedJSON = (exportMessage["text"] as? String)?.data(using: .utf8),
+expect("SMOKE-EXPORT type", exportMessage["type"] as? String ?? "<missing>", "export")
+guard let exportedJSON = (exportMessage["json"] as? String)?.data(using: .utf8),
       let exportedArray = try? JSONSerialization.jsonObject(with: exportedJSON) as? [[String: Any]] else {
     fail("SMOKE-EXPORT: payload is not a JSON array of objects")
 }
@@ -199,6 +198,14 @@ for key in ["id", "title", "category", "body", "favorite", "createdAt", "updated
     guard exportedArray[0][key] != nil else { fail("SMOKE-EXPORT: exported drop missing key \(key)") }
 }
 print("SMOKE-EXPORT keys OK")
+
+// SMOKE-IMPORT-ARM: with a non-empty library, the first Import click arms a
+// confirmation instead of opening the picker (destructive-replace guard).
+expect("SMOKE-IMPORT-ARM", jsString("""
+(() => { const b = document.getElementById('importButton'); b.click(); return (b.dataset.confirming === 'true' && b.textContent !== 'Import JSON') ? 'ARMED' : 'NOT_ARMED:' + b.textContent; })()
+"""), "ARMED")
+_ = js("(() => { const b = document.getElementById('importButton'); b.click(); return true; })()")
+expect("SMOKE-IMPORT-RESET", jsString("document.getElementById('importButton').textContent"), "Import JSON")
 
 // SMOKE-FAVORITE: starring a card survives the re-render (2 starter favorites + 1).
 expect("SMOKE-FAVORITE click", clickInCard(title: "Smoke Test Drop", selector: "[aria-label=\"Toggle favorite\"]"), "CLICKED")

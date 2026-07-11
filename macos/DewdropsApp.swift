@@ -1,5 +1,6 @@
 import AppKit
 import WebKit
+import UniformTypeIdentifiers
 
 private enum AppConfig {
     static let appName = "Dewdrops"
@@ -119,6 +120,10 @@ final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHa
                 copyToPasteboard(text)
                 callJavaScriptCallback("dewdropsNativeCopied")
             }
+        case "export":
+            if let json = body["json"] as? String {
+                exportToFile(json)
+            }
         default:
             break
         }
@@ -127,6 +132,23 @@ final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHa
     private func copyToPasteboard(_ text: String) {
         NSPasteboard.general.clearContents()
         NSPasteboard.general.setString(text, forType: .string)
+    }
+
+    private func exportToFile(_ json: String) {
+        let panel = NSSavePanel()
+        panel.nameFieldStringValue = "dewdrops-library.json"
+        panel.allowedContentTypes = [.json]
+        panel.canCreateDirectories = true
+        NSApp.activate(ignoringOtherApps: true)
+        panel.begin { [weak self] response in
+            guard response == .OK, let url = panel.url else { return }
+            do {
+                try json.write(to: url, atomically: true, encoding: .utf8)
+                self?.callJavaScriptCallback("dewdropsNativeExported")
+            } catch {
+                NSSound.beep()
+            }
+        }
     }
 
     private func callJavaScriptCallback(_ name: String) {

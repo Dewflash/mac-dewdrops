@@ -741,6 +741,7 @@
       let activeFilter = "All";
       let editingId = null;
       let clearConfirmTimer = null;
+      let importConfirmTimer = null;
       applyVibe(vibeColor);
 
       function makeSnippet(input) {
@@ -1139,9 +1140,11 @@
       }
 
       window.dewdropsNativeCopied = () => showToast("Copied");
+      window.dewdropsNativeExported = () => showToast("Exported");
 
       function exportJson() {
         const json = JSON.stringify(snippets, null, 2);
+        if (postNativeMessage({ type: "export", json })) return;
         copySnippet(json);
         const blob = new Blob([json], { type: "application/json" });
         const url = URL.createObjectURL(blob);
@@ -1184,6 +1187,25 @@
         saveSnippets();
         render();
         showToast(additions.length ? "Starters restored" : "Starters already there");
+      }
+
+      function requestImport() {
+        if (!snippets.length || elements.importButton.dataset.confirming) {
+          resetImportButton();
+          elements.importFile.click();
+          return;
+        }
+        elements.importButton.dataset.confirming = "true";
+        elements.importButton.textContent = "Replaces All - Sure?";
+        showToast("Import replaces your library");
+        importConfirmTimer = window.setTimeout(resetImportButton, 4000);
+      }
+
+      function resetImportButton() {
+        window.clearTimeout(importConfirmTimer);
+        importConfirmTimer = null;
+        delete elements.importButton.dataset.confirming;
+        elements.importButton.textContent = "Import JSON";
       }
 
       function clearLibrary() {
@@ -1238,7 +1260,7 @@
       elements.newButton.addEventListener("click", () => openEditor());
       elements.manageButton.addEventListener("click", () => elements.managePanel.classList.add("active"));
       elements.exportButton.addEventListener("click", exportJson);
-      elements.importButton.addEventListener("click", () => elements.importFile.click());
+      elements.importButton.addEventListener("click", requestImport);
       elements.importFile.addEventListener("change", () => {
         importJson(elements.importFile.files[0]);
         elements.importFile.value = "";
