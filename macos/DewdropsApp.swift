@@ -16,6 +16,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         configureStatusItem()
         configurePopover()
+        webViewController.loadIfNeeded()
+        webViewController.onCloseRequest = { [weak self] in
+            self?.popover.performClose(nil)
+        }
     }
 
     private func configureStatusItem() {
@@ -33,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         popover.behavior = .transient
         popover.contentSize = AppConfig.popoverSize
         popover.contentViewController = webViewController
+        popover.appearance = NSAppearance(named: .darkAqua)
     }
 
     @objc private func statusItemClicked(_ sender: NSStatusBarButton) {
@@ -45,7 +50,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             popover.performClose(sender)
         } else {
             webViewController.loadIfNeeded()
+            NSApp.activate(ignoringOtherApps: true)
             popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
+            webViewController.focusSearch()
         }
     }
 
@@ -65,6 +72,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHandler {
     private var didLoad = false
+    var onCloseRequest: (() -> Void)?
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = .default()
@@ -72,6 +80,7 @@ final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHa
 
         let view = WKWebView(frame: .zero, configuration: configuration)
         view.uiDelegate = self
+        view.setValue(false, forKey: "drawsBackground")
         return view
     }()
 
@@ -90,6 +99,11 @@ final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHa
         }
 
         webView.loadFileURL(htmlURL, allowingReadAccessTo: htmlURL.deletingLastPathComponent())
+    }
+
+    func focusSearch() {
+        view.window?.makeFirstResponder(webView)
+        webView.evaluateJavaScript("window.dewdropsFocusSearch && window.dewdropsFocusSearch();")
     }
 
     func webView(
@@ -124,6 +138,8 @@ final class WebViewController: NSViewController, WKUIDelegate, WKScriptMessageHa
             if let json = body["json"] as? String {
                 exportToFile(json)
             }
+        case "close":
+            onCloseRequest?()
         default:
             break
         }

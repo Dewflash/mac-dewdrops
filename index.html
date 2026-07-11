@@ -1141,6 +1141,24 @@
 
       window.dewdropsNativeCopied = () => showToast("Copied");
       window.dewdropsNativeExported = () => showToast("Exported");
+      window.dewdropsFocusSearch = () => {
+        if (elements.editorPanel.classList.contains("active") || elements.managePanel.classList.contains("active")) return;
+        elements.searchInput.focus();
+        elements.searchInput.select();
+      };
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape") return;
+        if (elements.editorPanel.classList.contains("active")) {
+          closeEditor();
+          return;
+        }
+        if (elements.managePanel.classList.contains("active")) {
+          elements.managePanel.classList.remove("active");
+          return;
+        }
+        postNativeMessage({ type: "close" });
+      });
 
       function exportJson() {
         const json = JSON.stringify(snippets, null, 2);

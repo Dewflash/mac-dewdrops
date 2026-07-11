@@ -180,6 +180,22 @@ guard spin(seconds: 15, until: { bridge.loaded }) else {
 }
 expect("SMOKE-PERSIST", countLabel(), "5 drops")
 
+// SMOKE-FOCUS-HOOK: the native side calls this on popover open; it must exist.
+expect("SMOKE-FOCUS-HOOK", jsString("typeof window.dewdropsFocusSearch"), "function")
+
+// SMOKE-ESC-EDITOR: Escape closes an open editor panel without touching the popover.
+expect("SMOKE-ESC-EDITOR", jsString("""
+(() => { document.getElementById('newButton').click(); document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); return document.getElementById('editorPanel').classList.contains('active') ? 'STILL_OPEN' : 'CLOSED'; })()
+"""), "CLOSED")
+
+// SMOKE-ESC-CONTRACT: Escape with no panel open posts {type:"close"} to the bridge.
+let escBefore = bridge.messages.count
+_ = js("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); true")
+guard spin(seconds: 5, until: { bridge.messages.count > escBefore }) else {
+    fail("SMOKE-ESC-CONTRACT: no bridge message after Escape")
+}
+expect("SMOKE-ESC-CONTRACT type", bridge.messages.last!["type"] as? String ?? "<missing>", "close")
+
 // SMOKE-EXPORT: the Export button hands the full library across the bridge as
 // {type:"export", json:...} for the native save panel (PLAN-export-backup).
 let exportBefore = bridge.messages.count
