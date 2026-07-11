@@ -231,5 +231,18 @@ expect("SMOKE-FAVORITE", jsInt("document.querySelectorAll('#snippetList .favorit
 expect("SMOKE-DELETE click", clickInCard(title: "Smoke Test Drop", selector: "[aria-label=\"Delete\"]"), "CLICKED")
 expect("SMOKE-DELETE", countLabel(), "4 drops")
 
+// SMOKE-DUPLICATE: duplicating a card creates "<title> copy" with the same body.
+expect("SMOKE-DUPLICATE click", clickInCard(title: "Friendly follow-up", selector: "[aria-label=\"Duplicate\"]"), "CLICKED")
+expect("SMOKE-DUPLICATE count", countLabel(), "5 drops")
+let dupBefore = bridge.messages.count
+expect("SMOKE-DUPLICATE copy click", clickInCard(title: "Friendly follow-up copy", selector: ""), "CLICKED")
+guard spin(seconds: 5, until: { bridge.messages.count > dupBefore }) else {
+    fail("SMOKE-DUPLICATE: no bridge message after clicking the duplicate")
+}
+expect("SMOKE-DUPLICATE body", bridge.messages.last!["text"] as? String ?? "<missing>",
+       "Hey, just following up on this. No rush, but wanted to keep it on your radar. Thanks.")
+expect("SMOKE-DUPLICATE cleanup", clickInCard(title: "Friendly follow-up copy", selector: "[aria-label=\"Delete\"]"), "CLICKED")
+expect("SMOKE-DUPLICATE end", countLabel(), "4 drops")
+
 print("SMOKE OK")
 exit(0)

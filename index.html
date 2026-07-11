@@ -913,6 +913,7 @@
         const footer = document.createElement("div");
         footer.className = "tile-footer";
         footer.append(
+          actionButton("", "Duplicate", duplicateIcon(), () => duplicateSnippet(snippet.id)),
           actionButton("", "Edit", editIcon(), () => openEditor(snippet.id)),
           actionButton("delete", "Delete", trashIcon(), () => deleteSnippet(snippet.id))
         );
@@ -1113,6 +1114,20 @@
         showToast("Drop deleted");
       }
 
+      function duplicateSnippet(id) {
+        const source = snippets.find((item) => item.id === id);
+        if (!source) return;
+        snippets.unshift(makeSnippet({
+          title: `${source.title.slice(0, 23)} copy`,
+          category: source.category,
+          body: source.body,
+          favorite: false
+        }));
+        saveSnippets();
+        render();
+        showToast("Drop duplicated");
+      }
+
       function copySnippet(text) {
         if (postNativeMessage({ type: "copy", text })) return;
         navigator.clipboard?.writeText(text)
@@ -1268,6 +1283,10 @@
 
       function editIcon() {
         return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m13.5 6.5 4 4" stroke="currentColor" stroke-width="2"/></svg>';
+      }
+
+      function duplicateIcon() {
+        return '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
       }
 
       function trashIcon() {
