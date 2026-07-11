@@ -8,7 +8,7 @@
     (() => {
       const appearance = Object.freeze({
         key: "dewdrops.look.v1",
-        looks: Object.freeze(["original", "native", "paper", "slate", "pinboard", "wash"]),
+        looks: Object.freeze(["original", "paper", "corkboard", "whiteboard", "scrapbook", "passport", "field", "recipe"]),
         defaultLook: "original"
       });
       window.dewdropsAppearance = appearance;
@@ -791,6 +791,158 @@
     .look-preview-wash i {
       border: 1px solid rgba(var(--accent-rgb), 0.28);
       background: rgba(var(--accent-rgb), 0.12);
+    }
+
+    .look-preview-corkboard {
+      background:
+        radial-gradient(circle at 20% 30%, rgba(89,52,28,.38) 0 .7px, transparent .9px),
+        radial-gradient(circle at 74% 68%, rgba(245,210,165,.27) 0 .8px, transparent 1px),
+        #9a6845;
+      background-size: 7px 9px, 11px 13px;
+    }
+
+    .look-preview-corkboard::before {
+      background: #563621;
+    }
+
+    .look-preview-corkboard i {
+      right: auto;
+      width: 34px;
+      height: 20px;
+      top: 23px;
+      background: #e8d99e;
+      box-shadow: 0 2px 3px rgba(57,33,18,.22);
+    }
+
+    .look-preview-corkboard i:nth-child(2) {
+      left: 48px;
+      background: #c7d9d4;
+    }
+
+    .look-preview-whiteboard {
+      border-color: #687477;
+      background:
+        radial-gradient(ellipse at 82% 8%, rgba(255,255,255,.82), transparent 34%),
+        #e4e8e5;
+    }
+
+    .look-preview-whiteboard::before {
+      background: #687477;
+    }
+
+    .look-preview-whiteboard i {
+      right: auto;
+      width: 34px;
+      height: 21px;
+      top: 22px;
+      background: #f0dfa0;
+      box-shadow: 0 2px 3px rgba(56,68,69,.18);
+    }
+
+    .look-preview-whiteboard i:nth-child(2) {
+      left: 48px;
+      background: #bcded5;
+    }
+
+    .look-preview-scrapbook {
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 2px, transparent 2px 6px),
+        #806047;
+    }
+
+    .look-preview-scrapbook::before {
+      background: #d7c6a5;
+    }
+
+    .look-preview-scrapbook i {
+      right: auto;
+      width: 34px;
+      height: 21px;
+      top: 22px;
+      background: #d8c7a8;
+      clip-path: polygon(0 3%, 30% 0, 58% 3%, 100% 1%, 97% 100%, 62% 96%, 28% 100%, 2% 97%);
+    }
+
+    .look-preview-scrapbook i:nth-child(2) {
+      left: 48px;
+      background: #b8c7be;
+    }
+
+    .look-preview-passport {
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
+        #17364a;
+    }
+
+    .look-preview-passport::before {
+      background: #d9d5c2;
+    }
+
+    .look-preview-passport i {
+      right: auto;
+      width: 34px;
+      height: 21px;
+      top: 22px;
+      border: 1px solid rgba(57,83,85,.28);
+      border-radius: 2px;
+      background: #e9e4cf;
+    }
+
+    .look-preview-passport i:nth-child(2) {
+      left: 48px;
+      background: #cedfd8;
+    }
+
+    .look-preview-field {
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
+        #5f6d50;
+    }
+
+    .look-preview-field::before {
+      background:
+        repeating-linear-gradient(0deg, transparent 0 7px, rgba(71,104,101,.12) 7px 8px),
+        #d6d2bd;
+    }
+
+    .look-preview-field i {
+      right: auto;
+      width: 34px;
+      height: 19px;
+      top: 23px;
+      border: 1px solid rgba(70,74,58,.18);
+      border-radius: 2px;
+      background: rgba(227,222,199,.9);
+    }
+
+    .look-preview-field i:nth-child(2) {
+      left: 48px;
+      background: rgba(201,216,207,.9);
+    }
+
+    .look-preview-recipe {
+      border-color: #6c7773;
+      background: linear-gradient(#9db7ae, #7f9d94);
+    }
+
+    .look-preview-recipe::before {
+      background: #d8ddd7;
+      border: 1px solid #5d746d;
+    }
+
+    .look-preview-recipe i {
+      right: auto;
+      width: 34px;
+      height: 21px;
+      top: 22px;
+      border-radius: 4px;
+      background: #eee8d7;
+      border-top: 5px solid #ad6254;
+    }
+
+    .look-preview-recipe i:nth-child(2) {
+      left: 48px;
+      border-top-color: #5f8179;
     }
 
     .look-label {
@@ -1640,6 +1792,529 @@
     html[data-look="wash"] .look-choice {
       background: var(--panel-2);
     }
+
+    /* Material shelves: each appearance changes the physical metaphor, not only the palette. */
+    html[data-look="paper"],
+    html[data-look="corkboard"],
+    html[data-look="whiteboard"],
+    html[data-look="scrapbook"],
+    html[data-look="passport"],
+    html[data-look="field"],
+    html[data-look="recipe"] {
+      color-scheme: light;
+    }
+
+    html[data-look]:not([data-look="original"]):not([data-look="paper"]) #manageButton,
+    html[data-look]:not([data-look="original"]):not([data-look="paper"]) #newButton,
+    html[data-look]:not([data-look="original"]):not([data-look="paper"]) #closeManage {
+      padding: 0;
+    }
+
+    html[data-look="paper"] body {
+      background:
+        radial-gradient(ellipse at 15% 12%, rgba(255,255,255,.22), transparent 28%),
+        repeating-linear-gradient(8deg, rgba(72,58,42,.018) 0 1px, transparent 1px 5px),
+        #cec7ba;
+      color: #312e27;
+    }
+
+    html[data-look="paper"] .app {
+      gap: 8px;
+      padding: 12px 14px 10px;
+      color: #312e27;
+    }
+
+    html[data-look="paper"] .app::before {
+      background:
+        radial-gradient(rgba(64,52,38,.3) .35px, transparent .5px),
+        linear-gradient(180deg, rgba(255,255,255,.16), transparent 40%);
+      background-size: 5px 7px, auto;
+      opacity: .24;
+    }
+
+    html[data-look="paper"] .mark {
+      width: 33px;
+      height: 36px;
+      border-color: #7d958d;
+      border-radius: 48% 48% 42% 42%;
+      background: rgba(236,231,220,.38);
+      color: #4b7f75;
+      box-shadow: inset 0 0 8px rgba(255,255,255,.35);
+    }
+
+    html[data-look="paper"] h1,
+    html[data-look="paper"] .snippet-title,
+    html[data-look="paper"] .snippet-body,
+    html[data-look="paper"] .input-wrap input {
+      font-family: ui-serif, "New York", Georgia, serif;
+    }
+
+    html[data-look="paper"] h1 { font-size: 21px; font-weight: 620; letter-spacing: -.55px; }
+    html[data-look="paper"] .count { color: #777064; font-size: 9.5px; }
+    html[data-look="paper"] .icon-button { border-color: rgba(73,61,46,.24); border-radius: 50%; background: rgba(232,226,214,.46); color: #4b463d; }
+    html[data-look="paper"] .input-wrap { height: 34px; border: 0; border-bottom: 1px solid rgba(76,65,49,.28); border-radius: 0; background: transparent; }
+    html[data-look="paper"] .input-wrap input { font-size: 12px; color: #4b463d; }
+    html[data-look="paper"] .filters { gap: 17px; padding: 0 2px 4px; }
+    html[data-look="paper"] .chip { min-height: 23px; padding: 0; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: #766f64; font-size: 9.5px; }
+    html[data-look="paper"] .chip.active { border-bottom-color: #4b897d; background: transparent; color: #3b746a; }
+    html[data-look="paper"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 1px 2px 2px; }
+    html[data-look="paper"] .card { grid-template-rows: auto auto; gap: 8px; height: 157px; padding: 14px 13px 40px; border-color: rgba(99,83,60,.14); border-radius: 5px 14px 7px 12px; background: #e4e0d6; box-shadow: 0 1px 0 rgba(59,48,31,.08), 0 5px 14px rgba(59,48,31,.06); }
+    html[data-look="paper"] .card:nth-child(4n + 2) { background: #d9e1dc; }
+    html[data-look="paper"] .card:nth-child(4n + 3) { background: #e4d8cc; }
+    html[data-look="paper"] .card:nth-child(4n) { background: #d8dce2; }
+    html[data-look="paper"] .card::before { content: ""; position: absolute; width: 46px; height: 11px; top: -3px; left: calc(50% - 23px); background: rgba(205,185,148,.54); transform: rotate(-1.5deg); box-shadow: 0 1px 2px rgba(70,55,35,.08); }
+    html[data-look="paper"] .card-top, html[data-look="paper"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="paper"] .title-area { display: flex; flex-direction: column-reverse; justify-content: flex-end; }
+    html[data-look="paper"] .snippet-title { min-height: 0; font-size: 15px; line-height: 1.12; font-weight: 620; letter-spacing: -.25px; }
+    html[data-look="paper"] .snippet-meta { display: block; margin-bottom: 7px; color: #867d6f; font-size: 7.5px; font-weight: 760; letter-spacing: .7px; text-transform: uppercase; }
+    html[data-look="paper"] .snippet-body { height: 45px; margin: 0; color: #70695e; font-size: 10.5px; line-height: 1.42; }
+    html[data-look="paper"] .card-actions { top: auto; right: 12px; bottom: 10px; }
+    html[data-look="paper"] .tile-footer { right: auto; left: 12px; bottom: 10px; opacity: .42; }
+    html[data-look="paper"] .mini-button { width: 20px; height: 20px; border-color: rgba(75,66,54,.14); border-radius: 50%; background: rgba(255,255,255,.24); color: rgba(50,46,39,.56); }
+    html[data-look="paper"] .footer button, html[data-look="paper"] .primary-button, html[data-look="paper"] .secondary-button, html[data-look="paper"] .danger-button { border-color: rgba(79,66,47,.18); background: rgba(255,255,255,.26); color: #6c655b; }
+    html[data-look="paper"] .panel { background: repeating-linear-gradient(0deg, rgba(77,62,42,.027) 0 1px, transparent 1px 24px), #d6d2c8; }
+
+    html[data-look="corkboard"] body {
+      background:
+        radial-gradient(circle at 20% 30%, rgba(89,52,28,.38) 0 .7px, transparent .9px),
+        radial-gradient(circle at 74% 68%, rgba(245,210,165,.27) 0 .8px, transparent 1px),
+        linear-gradient(118deg, rgba(255,255,255,.08), transparent 38%, rgba(69,39,21,.07)),
+        #a9744c;
+      background-size: 7px 9px, 11px 13px, auto, auto;
+      color: #31251c;
+    }
+
+    html[data-look="corkboard"] .app {
+      gap: 8px;
+      padding: 12px 12px 52px;
+      border: 8px solid #4b3020;
+      background: transparent;
+      box-shadow: inset 0 0 18px rgba(54,31,17,.32);
+    }
+
+    html[data-look="corkboard"] .app::before {
+      background: linear-gradient(#543522, #422819) top / 100% 54px no-repeat;
+      border-bottom: 2px solid #2c1a11;
+      opacity: 1;
+    }
+
+    html[data-look="corkboard"] .mark { width: 28px; height: 31px; border-radius: 7px; border-color: #b7864a; background: #352217; color: #e7b86c; box-shadow: none; }
+    html[data-look="corkboard"] h1 { color: #f1dfbd; font-size: 17px; letter-spacing: -.3px; }
+    html[data-look="corkboard"] .count { color: #c7a77c; font-size: 8.5px; }
+    html[data-look="corkboard"] .icon-button { width: 29px; height: 29px; border-color: #9e7248; border-radius: 5px; background: #3a2518; color: #e4c79d; }
+    html[data-look="corkboard"] .input-wrap { height: 37px; margin: 0 0 0; padding: 0 11px; border-color: rgba(75,50,31,.26); border-radius: 0; background: #e7d8b9; color: #5e432e; box-shadow: 0 3px 6px rgba(54,31,17,.18); }
+    html[data-look="corkboard"] .input-wrap input { color: #5e432e; font-size: 10.5px; font-weight: 620; }
+    html[data-look="corkboard"] .filters { gap: 7px; }
+    html[data-look="corkboard"] .chip { min-height: 24px; padding: 0 9px; border: 0; border-radius: 2px; background: rgba(229,211,177,.72); color: #5e432e; font-size: 8px; font-weight: 750; }
+    html[data-look="corkboard"] .chip.active { background: #6b3e28; color: #f5e7ca; }
+    html[data-look="corkboard"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 5px 0 0; }
+    html[data-look="corkboard"] .card { grid-template-rows: auto auto; gap: 8px; height: 168px; padding: 19px 13px 36px; border-color: rgba(79,54,31,.13); border-radius: 0; background: #eee0a8; box-shadow: 2px 5px 9px rgba(62,35,17,.24); transform: rotate(-.45deg); }
+    html[data-look="corkboard"] .card:nth-child(2) { background: #c9d9d5; transform: rotate(.65deg); }
+    html[data-look="corkboard"] .card:nth-child(3) { background: #e5c9bd; transform: rotate(.35deg); }
+    html[data-look="corkboard"] .card:nth-child(4) { background: #d4d0e0; transform: rotate(-.55deg); }
+    html[data-look="corkboard"] .card::before { content: ""; position: absolute; width: 12px; height: 12px; top: 7px; left: calc(50% - 6px); border-radius: 50%; background: radial-gradient(circle at 34% 28%, #fff3c8, #d65646 34%, #862a24 66%, #3b1c17 72%); box-shadow: 0 3px 3px rgba(37,18,10,.35); }
+    html[data-look="corkboard"] .card:nth-child(2)::before { background: radial-gradient(circle at 34% 28%, #fff, #5d9bb6 34%, #27546c 66%, #173343 72%); }
+    html[data-look="corkboard"] .card:nth-child(3)::before { background: radial-gradient(circle at 34% 28%, #fff, #d7a84f 34%, #855b1c 66%, #3f2d16 72%); }
+    html[data-look="corkboard"] .card:nth-child(4)::before { background: radial-gradient(circle at 34% 28%, #fff, #769269 34%, #42543b 66%, #263123 72%); }
+    html[data-look="corkboard"] .card-top, html[data-look="corkboard"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="corkboard"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="corkboard"] .snippet-meta { display: block; margin: 0 0 6px; color: rgba(66,48,32,.6); font-size: 7px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; }
+    html[data-look="corkboard"] .snippet-title { min-height: 0; font-family: "Bradley Hand", "Marker Felt", cursive; font-size: 16px; line-height: 1.06; font-weight: 650; }
+    html[data-look="corkboard"] .snippet-body { height: 42px; margin: 0; color: rgba(60,44,31,.7); font-family: "Bradley Hand", "Marker Felt", cursive; font-size: 10.5px; line-height: 1.3; }
+    html[data-look="corkboard"] .card-actions { top: auto; right: 12px; bottom: 10px; }
+    html[data-look="corkboard"] .tile-footer { right: auto; left: 12px; bottom: 10px; opacity: .38; }
+    html[data-look="corkboard"] .mini-button { width: 20px; height: 20px; border-color: rgba(58,43,30,.15); border-radius: 4px; background: rgba(255,255,255,.16); color: rgba(58,43,30,.58); }
+    html[data-look="corkboard"] .footer { position: absolute; left: 0; right: 0; bottom: 0; gap: 8px; padding: 7px 12px; background: linear-gradient(#573721, #3f2618); border-top: 2px solid #2b1a10; }
+    html[data-look="corkboard"] .footer button { min-height: 30px; border: 1px solid #9c7044; border-radius: 3px; color: #ead3ac; background: #3a2518; font-size: 8.5px; }
+    html[data-look="corkboard"] .panel { background: #543522; color: #f1dfbd; }
+
+    html[data-look="whiteboard"] body {
+      background:
+        radial-gradient(ellipse at 82% 8%, rgba(255,255,255,.82), transparent 34%),
+        linear-gradient(110deg, rgba(102,117,116,.025) 0 1px, transparent 1px 8px),
+        #e4e8e5;
+      color: #283033;
+    }
+
+    html[data-look="whiteboard"] .app {
+      gap: 7px;
+      padding: 12px 14px 46px;
+      border: 6px solid #5b6264;
+      background: transparent;
+      box-shadow: inset 0 0 18px rgba(67,78,79,.12), inset 0 0 0 1px #fafcfb;
+    }
+
+    html[data-look="whiteboard"] .app::before { display: none; }
+    html[data-look="whiteboard"] .mark { width: 30px; height: 30px; border: 2px solid #397c88; border-radius: 50%; color: #397c88; background: transparent; transform: rotate(-3deg); box-shadow: none; }
+    html[data-look="whiteboard"] h1 { font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 20px; transform: rotate(-1deg); }
+    html[data-look="whiteboard"] .count { color: #758083; font-size: 9px; }
+    html[data-look="whiteboard"] .icon-button { width: 30px; height: 30px; border: 2px solid #707b7e; border-radius: 50%; background: rgba(255,255,255,.34); color: #546366; }
+    html[data-look="whiteboard"] .input-wrap { height: 36px; border: 2px solid #66767a; border-radius: 8px 10px 7px 9px; background: rgba(255,255,255,.28); color: #657174; transform: rotate(-.15deg); }
+    html[data-look="whiteboard"] .input-wrap input { color: #657174; font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 11px; }
+    html[data-look="whiteboard"] .filters { gap: 7px; }
+    html[data-look="whiteboard"] .chip { min-height: 24px; padding: 0 9px; border: 0; border-radius: 8px; background: #c9d4d0; color: #4b5658; font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 9px; }
+    html[data-look="whiteboard"] .chip.active { background: #397c88; color: #fff; }
+    html[data-look="whiteboard"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; padding: 2px 0 0; }
+    html[data-look="whiteboard"] .card { grid-template-rows: auto auto; gap: 8px; height: 176px; padding: 18px 13px 37px; border: 0; border-radius: 2px; background: #f0dfa0; box-shadow: 2px 5px 9px rgba(56,68,69,.18); transform: rotate(-.28deg); }
+    html[data-look="whiteboard"] .card:nth-child(2) { background: #bcded5; transform: rotate(.38deg); }
+    html[data-look="whiteboard"] .card:nth-child(3) { background: #efc6b9; transform: rotate(.22deg); }
+    html[data-look="whiteboard"] .card:nth-child(4) { background: #cbd0ea; transform: rotate(-.35deg); }
+    html[data-look="whiteboard"] .card::before { content: ""; position: absolute; width: 13px; height: 13px; top: 7px; right: 8px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff, #3e8ca0 35%, #255763 70%); box-shadow: 0 2px 3px rgba(34,47,49,.32); }
+    html[data-look="whiteboard"] .card-top, html[data-look="whiteboard"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="whiteboard"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="whiteboard"] .snippet-meta { display: block; margin: 0 0 6px; color: rgba(39,48,50,.58); font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 8px; text-transform: uppercase; }
+    html[data-look="whiteboard"] .snippet-title { min-height: 0; font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 17px; line-height: 1.06; font-weight: 700; }
+    html[data-look="whiteboard"] .snippet-body { height: 43px; margin: 0; color: rgba(40,48,50,.69); font-family: "Marker Felt", "Bradley Hand", cursive; font-size: 10.5px; line-height: 1.28; }
+    html[data-look="whiteboard"] .card-actions { top: auto; right: 12px; bottom: 9px; }
+    html[data-look="whiteboard"] .tile-footer { right: auto; left: 12px; bottom: 9px; opacity: .38; }
+    html[data-look="whiteboard"] .mini-button { width: 20px; height: 20px; border-color: rgba(43,52,54,.14); border-radius: 4px; background: rgba(255,255,255,.2); color: rgba(43,52,54,.55); }
+    html[data-look="whiteboard"] .footer { position: absolute; left: 0; right: 0; bottom: 0; gap: 8px; padding: 7px 12px; border-top: 3px solid #7d8587; background: linear-gradient(#bdc3c3, #8e9798); }
+    html[data-look="whiteboard"] .footer::before { content: ""; position: absolute; left: 13px; top: 7px; width: 32px; height: 7px; border-radius: 5px; background: #343b3d; box-shadow: 40px 0 #343b3d, 80px 0 #343b3d; }
+    html[data-look="whiteboard"] .footer button { min-height: 26px; border: 1px solid #70797a; border-radius: 6px; background: #d8dddd; color: #334043; font-size: 8px; }
+    html[data-look="whiteboard"] .footer button:first-child { margin-left: auto; }
+    html[data-look="whiteboard"] .panel { background: #e4e8e5; color: #283033; }
+
+    html[data-look="scrapbook"] body {
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.018) 0 2px, transparent 2px 6px),
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.08), transparent 25%),
+        #806047;
+      color: #35291f;
+    }
+
+    html[data-look="scrapbook"] .app {
+      gap: 7px;
+      padding: 14px 14px 48px 26px;
+      border: 1px solid #5e4532;
+      background: transparent;
+      box-shadow: inset 13px 0 #4c3528, inset 17px 0 rgba(217,183,137,.22);
+    }
+
+    html[data-look="scrapbook"] .app::before { inset: 8px; border: 1px dashed rgba(232,201,159,.42); border-radius: 17px; background: transparent; opacity: 1; }
+    html[data-look="scrapbook"] .mark { width: 28px; height: 29px; border: 0; border-radius: 0; background: #d7c6a5; color: #8d3d38; box-shadow: 2px 3px 5px rgba(43,28,18,.2); transform: rotate(-1deg); }
+    html[data-look="scrapbook"] h1 { font-family: "American Typewriter", Georgia, serif; font-size: 17px; color: #35291f; }
+    html[data-look="scrapbook"] .count { color: #dbc7aa; font-size: 8.5px; }
+    html[data-look="scrapbook"] .icon-button { width: 30px; height: 30px; border-radius: 50%; color: #ead8b7; background: #4e372a; border-color: #b08d63; }
+    html[data-look="scrapbook"] .input-wrap { height: 37px; margin: 2px 0; padding: 0 12px; border: 0; border-radius: 0; background: #ded2bd; color: #4f3a2a; box-shadow: 2px 3px 6px rgba(44,29,18,.18); transform: rotate(.25deg); }
+    html[data-look="scrapbook"] .input-wrap input { color: #4f3a2a; font-family: "American Typewriter", Georgia, serif; font-size: 10px; }
+    html[data-look="scrapbook"] .filters { gap: 8px; }
+    html[data-look="scrapbook"] .chip { min-height: 23px; padding: 0 8px; border: 0; border-radius: 0; background: #bda27d; color: #4f3a2a; font-size: 8px; }
+    html[data-look="scrapbook"] .chip:nth-child(2n) { background: #9eafa5; }
+    html[data-look="scrapbook"] .chip.active { background: #743e35; color: #f2dfbd; }
+    html[data-look="scrapbook"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 11px; padding: 4px 0 0; }
+    html[data-look="scrapbook"] .card { grid-template-rows: auto auto; gap: 8px; height: 168px; padding: 17px 13px 37px; border: 0; border-radius: 0; background: #d8c7a8; box-shadow: 3px 5px 8px rgba(44,27,16,.22); clip-path: polygon(0 3%, 8% 1%, 17% 3%, 29% 0, 41% 2%, 54% 0, 68% 3%, 82% 1%, 100% 4%, 98% 94%, 89% 98%, 76% 96%, 61% 100%, 47% 97%, 34% 100%, 19% 97%, 3% 99%); transform: rotate(-.55deg); }
+    html[data-look="scrapbook"] .card:nth-child(2) { background: #b8c7be; transform: rotate(.7deg); }
+    html[data-look="scrapbook"] .card:nth-child(3) { background: #d4aaa0; transform: rotate(.48deg); }
+    html[data-look="scrapbook"] .card:nth-child(4) { background: #b9bed0; transform: rotate(-.6deg); }
+    html[data-look="scrapbook"] .card::before { content: ""; position: absolute; width: 52px; height: 13px; top: -2px; left: calc(50% - 26px); opacity: .72; background: repeating-linear-gradient(45deg, transparent 0 5px, rgba(255,255,255,.22) 5px 7px), #8daba0; transform: rotate(-2deg); }
+    html[data-look="scrapbook"] .card:nth-child(2)::before { background-color: #c88d7c; transform: rotate(2deg); }
+    html[data-look="scrapbook"] .card:nth-child(3)::before { background-color: #d1ae61; }
+    html[data-look="scrapbook"] .card:nth-child(4)::before { background-color: #847c9d; }
+    html[data-look="scrapbook"] .card-top, html[data-look="scrapbook"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="scrapbook"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="scrapbook"] .snippet-meta { display: block; margin: 0 0 6px; color: rgba(60,43,30,.56); font-family: "American Typewriter", Georgia, serif; font-size: 7px; text-transform: uppercase; }
+    html[data-look="scrapbook"] .snippet-title { min-height: 0; font-family: "American Typewriter", Georgia, serif; font-size: 14px; line-height: 1.08; }
+    html[data-look="scrapbook"] .snippet-body { height: 42px; margin: 0; color: rgba(58,43,31,.7); font-family: "American Typewriter", Georgia, serif; font-size: 9.5px; line-height: 1.33; }
+    html[data-look="scrapbook"] .card-actions { top: auto; right: 12px; bottom: 10px; }
+    html[data-look="scrapbook"] .tile-footer { right: auto; left: 12px; bottom: 10px; opacity: .38; }
+    html[data-look="scrapbook"] .mini-button { width: 20px; height: 20px; border-color: rgba(61,43,30,.14); border-radius: 2px; background: rgba(255,255,255,.16); color: rgba(61,43,30,.55); }
+    html[data-look="scrapbook"] .footer { position: absolute; left: 26px; right: 0; bottom: 0; gap: 9px; padding: 7px 12px; background: #4f372a; }
+    html[data-look="scrapbook"] .footer button { min-height: 30px; border: 1px solid #a07c55; border-radius: 0; color: #f0dcb9; background: #4f372a; font-family: "American Typewriter", Georgia, serif; font-size: 8px; }
+    html[data-look="scrapbook"] .panel { background: #806047; color: #f0dcb9; }
+
+    html[data-look="passport"] body {
+      background:
+        radial-gradient(circle at 12% 8%, rgba(255,255,255,.08), transparent 23%),
+        repeating-linear-gradient(45deg, rgba(255,255,255,.012) 0 1px, transparent 1px 4px),
+        #17364a;
+      color: #293c46;
+    }
+
+    html[data-look="passport"] .app {
+      gap: 7px;
+      padding: 22px 22px 20px;
+      border: 1px solid #152531;
+      border-radius: 16px;
+      background:
+        radial-gradient(ellipse at 88% 8%, rgba(76,129,135,.13), transparent 30%),
+        repeating-radial-gradient(circle at 85% 10%, transparent 0 8px, rgba(69,117,121,.045) 8px 9px),
+        repeating-linear-gradient(0deg, transparent 0 19px, rgba(62,103,107,.04) 19px 20px),
+        #d9d5c2;
+      box-shadow: inset 0 0 20px rgba(73,64,42,.15), 0 4px 12px rgba(2,13,20,.35);
+    }
+
+    html[data-look="passport"] .app::before { background: transparent; }
+    html[data-look="passport"] .mark { width: 33px; height: 33px; border: 2px double #9a7a3f; border-radius: 50%; color: #3a7377; background: transparent; box-shadow: none; }
+    html[data-look="passport"] h1 { font-family: Georgia, serif; font-size: 18px; letter-spacing: 1px; text-transform: uppercase; color: #293c46; }
+    html[data-look="passport"] .count { color: #7c6b4b; font-size: 6.5px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; }
+    html[data-look="passport"] .icon-button { width: 29px; height: 29px; border: 1px solid rgba(45,76,82,.35); border-radius: 50%; background: rgba(255,255,255,.18); color: #49666d; }
+    html[data-look="passport"] .input-wrap { height: 34px; border-top: 1px solid rgba(43,75,80,.28); border-bottom: 1px solid rgba(43,75,80,.28); border-left: 0; border-right: 0; border-radius: 0; background: transparent; color: #50666d; }
+    html[data-look="passport"] .input-wrap input { color: #50666d; font-family: ui-monospace, monospace; font-size: 9px; letter-spacing: .65px; }
+    html[data-look="passport"] .filters { gap: 7px; }
+    html[data-look="passport"] .chip { min-height: 23px; padding: 0 8px; border: 1px solid rgba(64,87,83,.28); border-radius: 50%; background: transparent; color: #607075; font-family: "American Typewriter", serif; font-size: 7.5px; }
+    html[data-look="passport"] .chip.active { border-color: #a15650; background: transparent; color: #8c3f3b; }
+    html[data-look="passport"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 2px 0 0; }
+    html[data-look="passport"] .card { grid-template-rows: auto auto; gap: 8px; height: 169px; padding: 13px 12px 36px; border: 1px solid rgba(57,83,85,.28); border-radius: 2px; background: repeating-radial-gradient(circle at 100% 0, transparent 0 7px, rgba(53,100,101,.045) 7px 8px), rgba(233,228,207,.68); box-shadow: 0 2px 4px rgba(60,51,34,.09); transform: rotate(-.2deg); }
+    html[data-look="passport"] .card:nth-child(2) { background-color: rgba(206,223,216,.48); transform: rotate(.25deg); }
+    html[data-look="passport"] .card:nth-child(3) { background-color: rgba(226,209,195,.5); transform: rotate(.2deg); }
+    html[data-look="passport"] .card:nth-child(4) { background-color: rgba(203,213,224,.52); transform: rotate(-.22deg); }
+    html[data-look="passport"] .card::before { content: ""; position: absolute; width: 35px; height: 35px; right: 8px; top: 8px; border: 2px double rgba(130,65,60,.26); border-radius: 50%; transform: rotate(-13deg); }
+    html[data-look="passport"] .card::before { display: none; }
+    html[data-look="passport"] .card-top, html[data-look="passport"] .title-area { height: auto; padding-right: 0; }
+    html[data-look="passport"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="passport"] .snippet-meta { display: block; margin: 0 0 7px; color: #8b4c47; font-family: ui-monospace, monospace; font-size: 6.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+    html[data-look="passport"] .snippet-title { min-height: 0; font-family: Georgia, serif; font-size: 14px; line-height: 1.08; text-transform: uppercase; }
+    html[data-look="passport"] .snippet-body { height: 40px; margin: 0; color: #607074; font-family: ui-monospace, monospace; font-size: 8px; line-height: 1.35; }
+    html[data-look="passport"] .card-actions { top: auto; right: 11px; bottom: 9px; }
+    html[data-look="passport"] .tile-footer { right: auto; left: 11px; bottom: 9px; opacity: .35; }
+    html[data-look="passport"] .mini-button { width: 20px; height: 20px; border-color: rgba(64,87,83,.18); border-radius: 3px; background: rgba(255,255,255,.18); color: #758185; }
+    html[data-look="passport"] .footer { gap: 8px; }
+    html[data-look="passport"] .footer button { min-height: 29px; border: 1px solid rgba(48,78,82,.28); border-radius: 0; color: #425a61; background: rgba(255,255,255,.16); font-family: ui-monospace, monospace; font-size: 7.5px; letter-spacing: .6px; }
+    html[data-look="passport"] .panel { background: #d9d5c2; color: #293c46; }
+
+    html[data-look="field"] body {
+      background:
+        repeating-linear-gradient(45deg, rgba(255,255,255,.018) 0 1px, transparent 1px 4px),
+        #5f6d50;
+      color: #303529;
+    }
+
+    html[data-look="field"] .app {
+      gap: 7px;
+      padding: 18px 27px 18px 43px;
+      border: 2px solid #3e4834;
+      border-radius: 4px 12px 8px 4px;
+      background:
+        linear-gradient(90deg, transparent 0 28px, rgba(174,69,59,.18) 28px 29px, transparent 29px),
+        repeating-linear-gradient(0deg, transparent 0 20px, rgba(71,104,101,.12) 20px 21px),
+        repeating-linear-gradient(90deg, transparent 0 20px, rgba(71,104,101,.07) 20px 21px),
+        #d6d2bd;
+      box-shadow: inset 0 0 16px rgba(77,67,44,.12), 0 5px 10px rgba(27,34,21,.28);
+    }
+
+    html[data-look="field"] .app::before { background: repeating-linear-gradient(0deg, transparent 0 33px, #c1bca7 33px 39px, #5a5e54 39px 42px, transparent 42px 48px) left 11px top 30px / 14px calc(100% - 70px) no-repeat; opacity: 1; }
+    html[data-look="field"] .mark { width: 31px; height: 31px; border: 1px solid #5d715f; border-radius: 3px; color: #4b756e; background: rgba(255,255,255,.18); box-shadow: none; }
+    html[data-look="field"] h1 { font-family: "Avenir Next", sans-serif; font-size: 17px; font-weight: 720; letter-spacing: .2px; text-transform: uppercase; color: #303529; }
+    html[data-look="field"] .count { color: #6f715f; font-family: ui-monospace, monospace; font-size: 7px; letter-spacing: .7px; text-transform: uppercase; }
+    html[data-look="field"] .icon-button { width: 29px; height: 29px; border: 1px solid #77806c; border-radius: 4px; color: #5b6654; background: rgba(255,255,255,.15); }
+    html[data-look="field"] .input-wrap { height: 35px; border: 1px solid rgba(74,82,65,.26); border-radius: 2px; background: rgba(255,255,255,.12); color: #65695a; }
+    html[data-look="field"] .input-wrap input { color: #65695a; font-family: ui-monospace, monospace; font-size: 9px; }
+    html[data-look="field"] .filters { gap: 14px; }
+    html[data-look="field"] .chip { min-height: 23px; padding: 0; border: 0; border-radius: 0; background: transparent; color: #6e705e; font-family: ui-monospace, monospace; font-size: 7.5px; text-transform: uppercase; }
+    html[data-look="field"] .chip.active { background: transparent; color: #9a493f; font-weight: 800; text-decoration: underline; text-underline-offset: 4px; }
+    html[data-look="field"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 2px 0 0; }
+    html[data-look="field"] .card { grid-template-rows: auto auto; gap: 7px; height: 174px; padding: 14px 12px 38px; border: 1px solid rgba(70,74,58,.18); border-radius: 2px; background: rgba(227,222,199,.75); box-shadow: 2px 4px 7px rgba(67,61,43,.1); }
+    html[data-look="field"] .card:nth-child(2) { background: rgba(201,216,207,.76); }
+    html[data-look="field"] .card:nth-child(3) { background: rgba(220,203,190,.76); }
+    html[data-look="field"] .card:nth-child(4) { background: rgba(199,204,220,.76); }
+    html[data-look="field"] .card::before { content: ""; position: absolute; width: 24px; height: 5px; top: 7px; right: 10px; border: 1.5px solid #72766b; border-bottom: 0; border-radius: 8px 8px 0 0; transform: rotate(9deg); }
+    html[data-look="field"] .card-top, html[data-look="field"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="field"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="field"] .snippet-meta { display: block; margin: 0 0 6px; color: #8e4f46; font-family: ui-monospace, monospace; font-size: 6.5px; letter-spacing: .7px; text-transform: uppercase; }
+    html[data-look="field"] .snippet-title { min-height: 0; font-family: "Avenir Next", sans-serif; font-size: 13px; line-height: 1.1; font-weight: 720; }
+    html[data-look="field"] .snippet-body { height: 42px; margin: 0; color: #6d6d5d; font-family: ui-monospace, monospace; font-size: 8px; line-height: 1.42; }
+    html[data-look="field"] .card-actions { top: auto; right: 11px; bottom: 10px; }
+    html[data-look="field"] .tile-footer { right: auto; left: 11px; bottom: 10px; opacity: .38; }
+    html[data-look="field"] .mini-button { width: 20px; height: 20px; border-color: rgba(70,74,58,.15); border-radius: 2px; background: rgba(255,255,255,.16); color: #7b7b69; }
+    html[data-look="field"] .footer { gap: 8px; }
+    html[data-look="field"] .footer button { min-height: 28px; border-top: 1px solid rgba(70,75,58,.34); border-bottom: 1px solid rgba(70,75,58,.34); border-radius: 0; color: #626653; background: transparent; font-family: ui-monospace, monospace; font-size: 7px; letter-spacing: .5px; }
+    html[data-look="field"] .panel { background: #d6d2bd; color: #303529; }
+
+    html[data-look="recipe"] body {
+      background:
+        radial-gradient(ellipse at 25% 0, rgba(255,255,255,.36), transparent 28%),
+        linear-gradient(#9db7ae, #7f9d94);
+      color: #3c413d;
+    }
+
+    html[data-look="recipe"] .app {
+      gap: 7px;
+      padding: 15px 14px 56px;
+      border: 5px solid #6c7773;
+      border-radius: 13px;
+      background: transparent;
+      box-shadow: inset 0 0 0 2px #c3cec9, inset 0 0 22px rgba(39,58,53,.22);
+    }
+
+    html[data-look="recipe"] .app::before { inset: 4px; border: 1px solid rgba(255,255,255,.42); border-radius: 15px; background: transparent; opacity: 1; }
+    html[data-look="recipe"] .mark { width: 32px; height: 32px; border: 2px solid #ad5f50; border-radius: 50%; color: #ad5f50; background: transparent; box-shadow: none; }
+    html[data-look="recipe"] h1 { font-family: "American Typewriter", Georgia, serif; font-size: 17px; color: #4b5a55; }
+    html[data-look="recipe"] .count { color: #7d827d; font-size: 6px; font-weight: 800; letter-spacing: 1.3px; text-transform: uppercase; }
+    html[data-look="recipe"] .icon-button { width: 29px; height: 29px; border: 1px solid #81918b; border-radius: 50%; background: #eef0ec; color: #65736e; }
+    html[data-look="recipe"] .input-wrap { height: 37px; margin: 2px 0; padding: 0 11px; border: 1px solid #89988f; border-radius: 5px; background: #ebe7d8; color: #70776f; box-shadow: 0 2px 4px rgba(45,62,57,.16); }
+    html[data-look="recipe"] .input-wrap input { color: #70776f; font-family: "American Typewriter", Georgia, serif; font-size: 9.5px; }
+    html[data-look="recipe"] .filters { gap: 4px; }
+    html[data-look="recipe"] .chip { min-height: 23px; padding: 0 9px; border: 1px solid #7f9089; border-bottom: 0; border-radius: 7px 7px 0 0; background: #c8d3ce; color: #61706b; font-family: "American Typewriter", serif; font-size: 7px; }
+    html[data-look="recipe"] .chip:nth-child(2) { background: #e6c7b4; }
+    html[data-look="recipe"] .chip:nth-child(3) { background: #d8ce9d; }
+    html[data-look="recipe"] .chip.active { background: #ae6253; color: #fff; }
+    html[data-look="recipe"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 10px; border: 2px solid #61766f; border-radius: 4px 4px 12px 12px; background: #78968d; box-shadow: inset 0 4px 8px rgba(44,63,57,.24); }
+    html[data-look="recipe"] .card { grid-template-rows: auto auto; gap: 7px; height: 160px; padding: 29px 12px 36px; border: 1px solid #a49e88; border-radius: 4px 4px 10px 10px; background: repeating-linear-gradient(0deg, transparent 0 20px, rgba(91,83,63,.08) 20px 21px), #eee8d7; box-shadow: 1px 4px 7px rgba(45,58,53,.2); }
+    html[data-look="recipe"] .card:nth-child(2) { background-color: #eee8d7; }
+    html[data-look="recipe"] .card::before { content: attr(data-category); position: absolute; left: -1px; right: -1px; top: -1px; height: 23px; padding-left: 10px; border-radius: 4px 4px 0 0; background: #ad6254; color: #fff6e9; font-family: "American Typewriter", Georgia, serif; font-size: 6.5px; font-weight: 800; letter-spacing: .7px; line-height: 23px; text-transform: uppercase; }
+    html[data-look="recipe"] .card:nth-child(2)::before { background: #5f8179; }
+    html[data-look="recipe"] .card:nth-child(3)::before { background: #9a823e; }
+    html[data-look="recipe"] .card:nth-child(4)::before { background: #747895; }
+    html[data-look="recipe"] .card-top, html[data-look="recipe"] .title-area { height: auto; padding-right: 20px; }
+    html[data-look="recipe"] .title-area { display: flex; flex-direction: column-reverse; }
+    html[data-look="recipe"] .snippet-meta { display: none; }
+    html[data-look="recipe"] .snippet-title { min-height: 0; font-family: "American Typewriter", Georgia, serif; font-size: 13px; line-height: 1.1; }
+    html[data-look="recipe"] .snippet-body { height: 42px; margin: 0; color: #787264; font-family: "American Typewriter", Georgia, serif; font-size: 8.5px; line-height: 1.35; }
+    html[data-look="recipe"] .card-actions { top: auto; right: 11px; bottom: 10px; }
+    html[data-look="recipe"] .tile-footer { right: auto; left: 11px; bottom: 10px; opacity: .38; }
+    html[data-look="recipe"] .mini-button { width: 20px; height: 20px; border-color: rgba(91,83,63,.16); border-radius: 4px; background: rgba(255,255,255,.2); color: #807a6b; }
+    html[data-look="recipe"] .footer { position: absolute; left: 9px; right: 9px; bottom: 9px; gap: 9px; padding: 8px 10px; border: 1px solid #5d716a; border-radius: 0 0 11px 11px; background: #8ca79f; }
+    html[data-look="recipe"] .footer button { min-height: 28px; border: 1px solid #61756e; border-radius: 7px; color: #43544f; background: #cbd5d0; font-family: "American Typewriter", serif; font-size: 7.5px; }
+    html[data-look="recipe"] .panel { background: #d8ddd7; color: #3c413d; }
+
+    html[data-look="paper"] .panel,
+    html[data-look="whiteboard"] .panel,
+    html[data-look="passport"] .panel,
+    html[data-look="field"] .panel,
+    html[data-look="recipe"] .panel,
+    html[data-look="paper"] .panel .settings-tab,
+    html[data-look="whiteboard"] .panel .settings-tab,
+    html[data-look="passport"] .panel .settings-tab,
+    html[data-look="field"] .panel .settings-tab,
+    html[data-look="recipe"] .panel .settings-tab,
+    html[data-look="paper"] .panel .look-choice,
+    html[data-look="whiteboard"] .panel .look-choice,
+    html[data-look="passport"] .panel .look-choice,
+    html[data-look="field"] .panel .look-choice,
+    html[data-look="recipe"] .panel .look-choice {
+      color: #111;
+    }
+
+    html[data-look="paper"] .panel .look-copy span,
+    html[data-look="whiteboard"] .panel .look-copy span,
+    html[data-look="passport"] .panel .look-copy span,
+    html[data-look="field"] .panel .look-copy span,
+    html[data-look="recipe"] .panel .look-copy span,
+    html[data-look="paper"] .panel .look-note,
+    html[data-look="whiteboard"] .panel .look-note,
+    html[data-look="passport"] .panel .look-note,
+    html[data-look="field"] .panel .look-note,
+    html[data-look="recipe"] .panel .look-note,
+    html[data-look="paper"] .panel label,
+    html[data-look="whiteboard"] .panel label,
+    html[data-look="passport"] .panel label,
+    html[data-look="field"] .panel label,
+    html[data-look="recipe"] .panel label {
+      color: rgba(17,17,17,.72);
+    }
+
+    html[data-look="paper"] .panel .look-label small,
+    html[data-look="whiteboard"] .panel .look-label small,
+    html[data-look="passport"] .panel .look-label small,
+    html[data-look="field"] .panel .look-label small,
+    html[data-look="recipe"] .panel .look-label small {
+      color: rgba(17,17,17,.58);
+    }
+
+    html[data-look="paper"] #managePanel,
+    html[data-look="whiteboard"] #managePanel,
+    html[data-look="passport"] #managePanel,
+    html[data-look="field"] #managePanel,
+    html[data-look="recipe"] #managePanel,
+    html[data-look="paper"] #managePanel .panel-title,
+    html[data-look="whiteboard"] #managePanel .panel-title,
+    html[data-look="passport"] #managePanel .panel-title,
+    html[data-look="field"] #managePanel .panel-title,
+    html[data-look="recipe"] #managePanel .panel-title,
+    html[data-look="paper"] #managePanel .settings-tab,
+    html[data-look="whiteboard"] #managePanel .settings-tab,
+    html[data-look="passport"] #managePanel .settings-tab,
+    html[data-look="field"] #managePanel .settings-tab,
+    html[data-look="recipe"] #managePanel .settings-tab,
+    html[data-look="paper"] #managePanel .section-title,
+    html[data-look="whiteboard"] #managePanel .section-title,
+    html[data-look="passport"] #managePanel .section-title,
+    html[data-look="field"] #managePanel .section-title,
+    html[data-look="recipe"] #managePanel .section-title,
+    html[data-look="paper"] #managePanel .empty,
+    html[data-look="whiteboard"] #managePanel .empty,
+    html[data-look="passport"] #managePanel .empty,
+    html[data-look="field"] #managePanel .empty,
+    html[data-look="recipe"] #managePanel .empty,
+    html[data-look="paper"] #managePanel .secondary-button,
+    html[data-look="whiteboard"] #managePanel .secondary-button,
+    html[data-look="passport"] #managePanel .secondary-button,
+    html[data-look="field"] #managePanel .secondary-button,
+    html[data-look="recipe"] #managePanel .secondary-button,
+    html[data-look="paper"] #managePanel .primary-button,
+    html[data-look="whiteboard"] #managePanel .primary-button,
+    html[data-look="passport"] #managePanel .primary-button,
+    html[data-look="field"] #managePanel .primary-button,
+    html[data-look="recipe"] #managePanel .primary-button,
+    html[data-look="paper"] #managePanel .danger-button,
+    html[data-look="whiteboard"] #managePanel .danger-button,
+    html[data-look="passport"] #managePanel .danger-button,
+    html[data-look="field"] #managePanel .danger-button,
+    html[data-look="recipe"] #managePanel .danger-button {
+      color: #111;
+    }
+
+    html[data-look="paper"] #managePanel input,
+    html[data-look="whiteboard"] #managePanel input,
+    html[data-look="passport"] #managePanel input,
+    html[data-look="field"] #managePanel input,
+    html[data-look="recipe"] #managePanel input {
+      border-color: rgba(17,17,17,.25);
+      background: rgba(255,255,255,.58);
+      color: #111;
+    }
+
+    html[data-look="paper"] #managePanel input::placeholder,
+    html[data-look="whiteboard"] #managePanel input::placeholder,
+    html[data-look="passport"] #managePanel input::placeholder,
+    html[data-look="field"] #managePanel input::placeholder,
+    html[data-look="recipe"] #managePanel input::placeholder {
+      color: rgba(17,17,17,.58);
+    }
+
+    html[data-look="paper"] #managePanel .settings-section,
+    html[data-look="whiteboard"] #managePanel .settings-section,
+    html[data-look="passport"] #managePanel .settings-section,
+    html[data-look="field"] #managePanel .settings-section,
+    html[data-look="recipe"] #managePanel .settings-section,
+    html[data-look="paper"] #managePanel .settings-tabs,
+    html[data-look="whiteboard"] #managePanel .settings-tabs,
+    html[data-look="passport"] #managePanel .settings-tabs,
+    html[data-look="field"] #managePanel .settings-tabs,
+    html[data-look="recipe"] #managePanel .settings-tabs {
+      border-color: rgba(17,17,17,.22);
+      background: rgba(255,255,255,.28);
+    }
+
+    html[data-look="paper"] #managePanel .settings-tab.active,
+    html[data-look="whiteboard"] #managePanel .settings-tab.active,
+    html[data-look="passport"] #managePanel .settings-tab.active,
+    html[data-look="field"] #managePanel .settings-tab.active,
+    html[data-look="recipe"] #managePanel .settings-tab.active {
+      color: #111;
+      background: rgba(17,17,17,.1);
+      box-shadow: inset 0 0 0 1px rgba(17,17,17,.18);
+    }
+
+    .mark {
+      display: grid;
+    }
+
+    .brand {
+      gap: 10px;
+    }
+
+    html[data-look] .tile-footer {
+      opacity: 1;
+    }
+
+    html[data-look="paper"] .input-wrap svg,
+    html[data-look="whiteboard"] .input-wrap svg,
+    html[data-look="passport"] .input-wrap svg,
+    html[data-look="field"] .input-wrap svg,
+    html[data-look="recipe"] .input-wrap svg {
+      color: rgba(17,17,17,.66);
+    }
   </style>
 </head>
 <body>
@@ -1729,25 +2404,33 @@
                 <span class="look-preview look-preview-original" aria-hidden="true"><i></i><i></i></span>
                 <span class="look-label"><span class="look-radio"></span><span><strong>Original</strong><small>Current card grid</small></span></span>
               </button>
-              <button class="look-choice" type="button" data-look-value="native" aria-pressed="false">
-                <span class="look-preview look-preview-native" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Native List</strong><small>Compact and familiar</small></span></span>
-              </button>
               <button class="look-choice" type="button" data-look-value="paper" aria-pressed="false">
                 <span class="look-preview look-preview-paper" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Paper Shelf</strong><small>Muted parchment</small></span></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Paper Shelf</strong><small>Muted paper and tape</small></span></span>
               </button>
-              <button class="look-choice" type="button" data-look-value="slate" aria-pressed="false">
-                <span class="look-preview look-preview-slate" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Soft Slate</strong><small>Calm and low-contrast</small></span></span>
+              <button class="look-choice" type="button" data-look-value="corkboard" aria-pressed="false">
+                <span class="look-preview look-preview-corkboard" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Corkboard</strong><small>Pinned index cards</small></span></span>
               </button>
-              <button class="look-choice" type="button" data-look-value="pinboard" aria-pressed="false">
-                <span class="look-preview look-preview-pinboard" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Pinboard</strong><small>Tactile dark notes</small></span></span>
+              <button class="look-choice" type="button" data-look-value="whiteboard" aria-pressed="false">
+                <span class="look-preview look-preview-whiteboard" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Whiteboard</strong><small>Magnets and marker tray</small></span></span>
               </button>
-              <button class="look-choice" type="button" data-look-value="wash" aria-pressed="false">
-                <span class="look-preview look-preview-wash" aria-hidden="true"><i></i><i></i></span>
-                <span class="look-label"><span class="look-radio"></span><span><strong>Colour Wash</strong><small>Built around your accent</small></span></span>
+              <button class="look-choice" type="button" data-look-value="scrapbook" aria-pressed="false">
+                <span class="look-preview look-preview-scrapbook" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Scrapbook</strong><small>Kraft, stitching, washi</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="passport" aria-pressed="false">
+                <span class="look-preview look-preview-passport" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Passport Wallet</strong><small>Stamped travel pages</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="field" aria-pressed="false">
+                <span class="look-preview look-preview-field" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Field Notebook</strong><small>Canvas, rings, graph paper</small></span></span>
+              </button>
+              <button class="look-choice" type="button" data-look-value="recipe" aria-pressed="false">
+                <span class="look-preview look-preview-recipe" aria-hidden="true"><i></i><i></i></span>
+                <span class="look-label"><span class="look-radio"></span><span><strong>Recipe Tin</strong><small>Enamel box and dividers</small></span></span>
               </button>
             </div>
             <p class="look-note">Original always remains available.</p>
@@ -2036,6 +2719,7 @@
       function snippetCard(snippet) {
         const card = document.createElement("article");
         card.className = "card";
+        card.dataset.category = snippet.category;
         card.title = "Click to copy";
         card.addEventListener("click", () => copySnippet(snippet.body));
 

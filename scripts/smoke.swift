@@ -130,7 +130,7 @@ expect("SMOKE-STORAGE", jsString("""
 (() => { try { localStorage.setItem('smoke.probe', '1'); const v = localStorage.getItem('smoke.probe'); localStorage.removeItem('smoke.probe'); return 'RW:' + v; } catch (e) { return 'ERR:' + e.name; } })()
 """), "RW:1")
 
-// SMOKE-LOOKS: all six looks are available in Settings, the selected look
+// SMOKE-LOOKS: all eight looks are available in Settings, the selected look
 // persists independently, and switching it never writes the snippet library.
 _ = js("localStorage.setItem('dewdrops.look.v1', 'mono'); true")
 bridge.loaded = false
@@ -144,7 +144,7 @@ document.documentElement.dataset.look + ':' + localStorage.getItem('dewdrops.loo
 expect("SMOKE-LOOKS default", jsString("document.documentElement.dataset.look"), "original")
 expect("SMOKE-LOOKS choices", jsString("""
 [...document.querySelectorAll('[data-look-value]')].map((button) => button.dataset.lookValue).join(',')
-"""), "original,native,paper,slate,pinboard,wash")
+"""), "original,paper,corkboard,whiteboard,scrapbook,passport,field,recipe")
 expect("SMOKE-LOOKS panel", jsString("""
 (() => {
   document.getElementById('manageButton').click();
@@ -167,17 +167,17 @@ expect("SMOKE-LOOKS tabs", jsString("""
 expect("SMOKE-LOOKS cycle", jsString("""
 (() => {
   const states = [];
-  for (const name of ['original', 'native', 'paper', 'slate', 'pinboard', 'wash']) {
+  for (const name of ['original', 'paper', 'corkboard', 'whiteboard', 'scrapbook', 'passport', 'field', 'recipe']) {
     const button = document.querySelector('[data-look-value="' + name + '"]');
     button.click();
     states.push(document.documentElement.dataset.look + ':' + button.getAttribute('aria-pressed'));
   }
   return states.join('|');
 })()
-"""), "original:true|native:true|paper:true|slate:true|pinboard:true|wash:true")
+"""), "original:true|paper:true|corkboard:true|whiteboard:true|scrapbook:true|passport:true|field:true|recipe:true")
 expect("SMOKE-LOOKS select", jsString("""
 (() => {
-  document.querySelector('[data-look-value="native"]').click();
+  document.querySelector('[data-look-value="passport"]').click();
   return [
     document.documentElement.dataset.look,
     localStorage.getItem('dewdrops.look.v1'),
@@ -185,15 +185,15 @@ expect("SMOKE-LOOKS select", jsString("""
     localStorage.getItem('dewdrops.snippets.v1') === null ? 'SNIPPETS_UNTOUCHED' : 'SNIPPETS_WRITTEN'
   ].join(':');
 })()
-"""), "native:native:4 drops:SNIPPETS_UNTOUCHED")
+"""), "passport:passport:4 drops:SNIPPETS_UNTOUCHED")
 bridge.loaded = false
 webView.reload()
 guard spin(seconds: 15, until: { bridge.loaded }) else {
     fail("SMOKE-LOOKS: reload never finished", exitCode: 2)
 }
 expect("SMOKE-LOOKS persist", jsString("""
-document.documentElement.dataset.look + ':' + document.querySelector('[data-look-value="native"]').getAttribute('aria-pressed')
-"""), "native:true")
+document.documentElement.dataset.look + ':' + document.querySelector('[data-look-value="passport"]').getAttribute('aria-pressed')
+"""), "passport:true")
 expect("SMOKE-LOOKS restore", jsString("""
 (() => { document.querySelector('[data-look-value="original"]').click(); return document.documentElement.dataset.look + ':' + localStorage.getItem('dewdrops.look.v1'); })()
 """), "original:original")
