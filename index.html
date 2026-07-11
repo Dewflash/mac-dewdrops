@@ -2151,13 +2151,12 @@
     html[data-look="recipe"] .list { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; padding: 10px; border: 2px solid #61766f; border-radius: 4px 4px 12px 12px; background: #78968d; box-shadow: inset 0 4px 8px rgba(44,63,57,.24); }
     html[data-look="recipe"] .card { grid-template-rows: auto auto; gap: 7px; height: 160px; padding: 29px 12px 36px; border: 1px solid #a49e88; border-radius: 4px 4px 10px 10px; background: repeating-linear-gradient(0deg, transparent 0 20px, rgba(91,83,63,.08) 20px 21px), #eee8d7; box-shadow: 1px 4px 7px rgba(45,58,53,.2); }
     html[data-look="recipe"] .card:nth-child(2) { background-color: #eee8d7; }
-    html[data-look="recipe"] .card::before { content: attr(data-category); position: absolute; left: -1px; right: -1px; top: -1px; height: 23px; padding-left: 10px; border-radius: 4px 4px 0 0; background: #ad6254; color: #fff6e9; font-family: "American Typewriter", Georgia, serif; font-size: 6.5px; font-weight: 800; letter-spacing: .7px; line-height: 23px; text-transform: uppercase; }
-    html[data-look="recipe"] .card:nth-child(2)::before { background: #5f8179; }
-    html[data-look="recipe"] .card:nth-child(3)::before { background: #9a823e; }
-    html[data-look="recipe"] .card:nth-child(4)::before { background: #747895; }
     html[data-look="recipe"] .card-top, html[data-look="recipe"] .title-area { height: auto; padding-right: 20px; }
     html[data-look="recipe"] .title-area { display: flex; flex-direction: column-reverse; }
-    html[data-look="recipe"] .snippet-meta { display: none; }
+    html[data-look="recipe"] .snippet-meta { position: absolute; left: -1px; right: -1px; top: -1px; display: block; height: 23px; margin: 0; overflow: hidden; padding-left: 10px; border-radius: 4px 4px 0 0; background: #ad6254; color: #fff6e9; font-family: "American Typewriter", Georgia, serif; font-size: 6.5px; font-weight: 800; letter-spacing: .7px; line-height: 23px; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+    html[data-look="recipe"] .card:nth-child(2) .snippet-meta { background: #5f8179; }
+    html[data-look="recipe"] .card:nth-child(3) .snippet-meta { background: #9a823e; }
+    html[data-look="recipe"] .card:nth-child(4) .snippet-meta { background: #747895; }
     html[data-look="recipe"] .snippet-title { min-height: 0; font-family: "American Typewriter", Georgia, serif; font-size: 13px; line-height: 1.1; }
     html[data-look="recipe"] .snippet-body { height: 42px; margin: 0; color: #787264; font-family: "American Typewriter", Georgia, serif; font-size: 8.5px; line-height: 1.35; }
     html[data-look="recipe"] .card-actions { top: auto; right: 11px; bottom: 10px; }
@@ -2719,7 +2718,6 @@
       function snippetCard(snippet) {
         const card = document.createElement("article");
         card.className = "card";
-        card.dataset.category = snippet.category;
         card.title = "Click to copy";
         card.addEventListener("click", () => copySnippet(snippet.body));
 
