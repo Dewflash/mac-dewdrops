@@ -23,9 +23,7 @@ for needle in 'id="countLabel"' 'id="snippetList"' 'dewdropsNative' 'dewdrops.sn
   grep -qF "$needle" "$ROOT_DIR/index.html" || { echo "FAIL: index.html lost required marker: $needle"; exit 1; }
 done
 
-# --- SMOKE ---
-# PLAN-verify.md replaces the next echo line with the mandatory smoke-test run.
-# Until that plan lands, no behavioral smoke exists at HEAD.
-echo "== verify: smoke — NOT YET INSTALLED (see PLAN-verify.md) =="
+echo "== verify: smoke =="
+swift "$ROOT_DIR/scripts/smoke.swift" "$ROOT_DIR/index.html" || { echo "FAIL: smoke test"; exit 1; }
 
 echo "VERIFY GREEN"
